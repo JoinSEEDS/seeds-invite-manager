@@ -3,14 +3,14 @@
 
 import Hapi from "@hapi/hapi";
 import { Request, Server } from "@hapi/hapi";
-
+import { helloRoutes } from "./hello";
 
 export let server: Server;
 
 export const init = async function(): Promise<Server> {
     server = Hapi.server({
         port: process.env.PORT || 4000,
-        host: '0.0.0.0'
+        host: 'localhost'
     });
 
     // Routes will go here
@@ -20,6 +20,8 @@ export const init = async function(): Promise<Server> {
         path: "/",
         handler: index
     });
+
+    server.route(helloRoutes);
 
     return server;
 };

@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,47 +35,28 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.start = exports.init = exports.server = void 0;
-var hapi_1 = __importDefault(require("@hapi/hapi"));
-var hello_1 = require("./hello");
-var init = function () {
+exports.helloRoutes = void 0;
+function sayHello(request, h) {
     return __awaiter(this, void 0, void 0, function () {
+        var name, response;
         return __generator(this, function (_a) {
-            exports.server = hapi_1.default.server({
-                port: process.env.PORT || 4000,
-                host: 'localhost'
-            });
-            // Routes will go here
-            exports.server.route({
-                method: "GET",
-                path: "/",
-                handler: index
-            });
-            exports.server.route(hello_1.helloRoutes);
-            return [2 /*return*/, exports.server];
+            name = request.params.name || "World";
+            response = h.response("Hello " + name);
+            response.header('X-Custom', 'some-value');
+            return [2 /*return*/, response];
         });
     });
-};
-exports.init = init;
-var start = function () {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            console.log("Listening on " + exports.server.settings.host + ":" + exports.server.settings.port);
-            return [2 /*return*/, exports.server.start()];
-        });
-    });
-};
-exports.start = start;
-process.on('unhandledRejection', function (err) {
-    console.error("unhandledRejection");
-    console.error(err);
-    process.exit(1);
-});
-function index(request) {
-    console.log("Processing request", request.info.id);
-    return "Hello! Random act of kindness.";
 }
+exports.helloRoutes = [
+    {
+        method: "GET",
+        path: "/hello",
+        handler: sayHello
+    },
+    {
+        method: "GET",
+        path: "/hello/{name}",
+        handler: sayHello
+    }
+];
