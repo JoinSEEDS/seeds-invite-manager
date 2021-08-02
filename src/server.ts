@@ -2,7 +2,7 @@
 'use strict';
 
 import Hapi from "@hapi/hapi";
-import { Server } from "@hapi/hapi";
+import { Request, Server } from "@hapi/hapi";
 
 
 export let server: Server;
@@ -14,6 +14,12 @@ export const init = async function(): Promise<Server> {
     });
 
     // Routes will go here
+
+    server.route({
+        method: "GET",
+        path: "/",
+        handler: index
+    });
 
     return server;
 };
@@ -28,3 +34,8 @@ process.on('unhandledRejection', (err) => {
     console.error(err);
     process.exit(1);
 });
+
+function index(request: Request): string {
+    console.log("Processing request", request.info.id);
+    return "Hello! Random act of kindness.";
+}

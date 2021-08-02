@@ -6,7 +6,11 @@
         "strict": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true
+        "forceConsistentCasingInFileNames": true,
+        
       },
+    "exclude": [
+        "test"
+    ],
     "lib": ["es2015"]
   }
