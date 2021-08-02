@@ -44,7 +44,7 @@ var app = express_1.default();
 var port = 3000;
 var SimpleProduct_1 = require("./models/SimpleProduct");
 var ravendb_1 = require("ravendb");
-var store = new ravendb_1.DocumentStore('http://localhost:8001', 'Seeds1');
+var store = new ravendb_1.DocumentStore('http://localhost:8200', 'Seeds1');
 store.conventions.registerEntityType(SimpleProduct_1.SimpleProduct);
 var session;
 store.initialize();

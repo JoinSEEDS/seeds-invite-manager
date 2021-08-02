@@ -8,7 +8,7 @@ import { SimpleProduct } from "./models/SimpleProduct";
 import {DocumentStore, IDocumentStore, IDocumentSession, IDocumentQuery, QueryOperator} from 'ravendb';
 import DocumentConstructor from 'ravendb';
 
-const store: IDocumentStore = new DocumentStore('http://localhost:8001', 'Seeds1');
+const store: IDocumentStore = new DocumentStore('http://localhost:8200', 'Seeds1');
 store.conventions.registerEntityType(SimpleProduct);
 let session: IDocumentSession;
 
