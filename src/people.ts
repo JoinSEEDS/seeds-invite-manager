@@ -1,5 +1,13 @@
 import { Request, ResponseToolkit, ResponseObject, ServerRoute } from "@hapi/hapi";
 
+import Joi from "joi";
+const ValidationError = Joi.ValidationError;
+
+const schema = Joi.object({
+    name: Joi.string().required(),
+    age: Joi.number().required()
+});
+
 type Person = {
     name: string;
     age: number;
@@ -21,13 +29,27 @@ async function addPersonGet(request: Request, h: ResponseToolkit): Promise<Respo
 
 async function addPersonPost(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     let data = ({} as Person);
-    try {
-        data = (request.payload as Person);
+    console.log(request.payload);
+    data = (request.payload as Person);
+    console.log(data);
+    const o = schema.validate(data, { stripUnknown: true });
+    if (o.error) {
+        throw o.error;
+    }
+    try {        
+        data = (o.value as Person);
         people.push(data);
         return h.redirect("/people");
     } catch (err) {
-        console.error("Caught error", err);
-        return h.view("addPerson", { person: data })
+        const errors: { [key: string]: string } = {};
+        if (err instanceof ValidationError && err.isJoi) {
+            for (const detail of err.details) {
+                errors[detail.context!.key!] = detail.message;
+            }
+        } else {
+            console.error("error", err, "adding person");
+        }
+        return h.view("addPerson", { person: data, errorsA: errors })
     }
 }
 

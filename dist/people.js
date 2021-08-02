@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -39,80 +39,69 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.start = exports.init = exports.server = void 0;
-var hapi_1 = __importDefault(require("@hapi/hapi"));
-var vision_1 = __importDefault(require("@hapi/vision"));
-var hello_1 = require("./hello");
-var people_1 = require("./people");
-var init = function () {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    exports.server = hapi_1.default.server({
-                        port: process.env.PORT || 4000,
-                        host: 'localhost'
-                    });
-                    return [4 /*yield*/, registerVision(exports.server)];
-                case 1:
-                    _a.sent();
-                    // Routes will go here
-                    exports.server.route({
-                        method: "GET",
-                        path: "/",
-                        handler: index
-                    });
-                    exports.server.route(hello_1.helloRoutes);
-                    exports.server.route(people_1.peopleRoutes);
-                    return [2 /*return*/, exports.server];
-            }
-        });
-    });
-};
-exports.init = init;
-var start = function () {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            console.log("Listening on " + exports.server.settings.host + ":" + exports.server.settings.port);
-            return [2 /*return*/, exports.server.start()];
-        });
-    });
-};
-exports.start = start;
-function registerVision(server) {
-    return __awaiter(this, void 0, void 0, function () {
-        var cached;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, server.register(vision_1.default)];
-                case 1:
-                    _a.sent();
-                    if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
-                        cached = false;
-                    }
-                    else {
-                        cached = true;
-                    }
-                    server.log(["debug"], "Caching templates: " + cached);
-                    server.views({
-                        engines: {
-                            hbs: require("handlebars")
-                        },
-                        relativeTo: __dirname + "/../",
-                        path: 'templates',
-                        isCached: cached
-                    });
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-process.on('unhandledRejection', function (err) {
-    console.error("unhandledRejection");
-    console.error(err);
-    process.exit(1);
+exports.peopleRoutes = void 0;
+var joi_1 = __importDefault(require("joi"));
+var ValidationError = joi_1.default.ValidationError;
+var schema = joi_1.default.object({
+    name: joi_1.default.string().required(),
+    age: joi_1.default.number().required()
 });
-function index(request) {
-    console.log("Processing request", request.info.id);
-    return "Hello! Random act of kindness.";
+var people = [
+    { name: "Sophie", age: 37 },
+    { name: "Dan", age: 42 }
+];
+function showPeople(request, h) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, h.view("people.hbs", { people: people })];
+        });
+    });
 }
+function addPersonGet(request, h) {
+    return __awaiter(this, void 0, void 0, function () {
+        var data;
+        return __generator(this, function (_a) {
+            data = {};
+            return [2 /*return*/, h.view("addPerson", { person: data })];
+        });
+    });
+}
+function addPersonPost(request, h) {
+    return __awaiter(this, void 0, void 0, function () {
+        var data, o, errors, _i, _a, detail;
+        return __generator(this, function (_b) {
+            data = {};
+            console.log(request.payload);
+            data = request.payload;
+            console.log(data);
+            o = schema.validate(data, { stripUnknown: true });
+            if (o.error) {
+                throw o.error;
+            }
+            try {
+                data = o.value;
+                people.push(data);
+                return [2 /*return*/, h.redirect("/people")];
+            }
+            catch (err) {
+                errors = {};
+                if (err instanceof ValidationError && err.isJoi) {
+                    for (_i = 0, _a = err.details; _i < _a.length; _i++) {
+                        detail = _a[_i];
+                        errors[detail.context.key] = detail.message;
+                    }
+                }
+                else {
+                    console.error("error", err, "adding person");
+                }
+                return [2 /*return*/, h.view("addPerson", { person: data, errorsA: errors })];
+            }
+            return [2 /*return*/];
+        });
+    });
+}
+exports.peopleRoutes = [
+    { method: "GET", path: "/people", handler: showPeople },
+    { method: "GET", path: "/people/add", handler: addPersonGet },
+    { method: "POST", path: "/people/add", handler: addPersonPost }
+];

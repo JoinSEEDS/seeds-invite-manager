@@ -7,7 +7,7 @@ import { init } from "../src/server";
 
 const personData = { name: "Sherlock Holmes", age: 32 }
 
-describe.only("server handles people", async () => {
+describe.only("server handles people - positive tests", async () => {
 	let server: Server;
 
 	beforeEach((done) => {
@@ -55,5 +55,44 @@ describe.only("server handles people", async () => {
 		const html = parse(res.payload);
 		const people = html.querySelectorAll("li.person-entry");
 		expect(people.length).to.equal(3);
+	});
+})
+
+
+describe("server handles people - negative tests", async () => {
+	let server: Server;
+
+	beforeEach(async () => {
+		server = await init();
+	})
+	afterEach(async () => {
+		await server.stop();
+	});
+
+	it("can't add a person with no name", async () => {
+		let res = await server.inject({
+			method: "post",
+			url: "/people/add",
+			payload: { ...personData, name: null }
+		});
+		expect(res.statusCode).to.equal(200);
+	});
+
+	it("can't add a person with no age", async () => {
+		let res = await server.inject({
+			method: "post",
+			url: "/people/add",
+			payload: { ...personData, age: null }
+		});
+		expect(res.statusCode).to.equal(200);
+	});
+
+	it("can't add a person with non-number age", async () => {
+		let res = await server.inject({
+			method: "post",
+			url: "/people/add",
+			payload: { ...personData, age: "Watson" }
+		});
+		expect(res.statusCode).to.equal(200);
 	});
 })

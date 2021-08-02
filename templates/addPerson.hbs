@@ -7,9 +7,28 @@
 		<form method="POST">
 			<label for="name">Name</label>
 			<input type="text" name="name" value="{{ person.name }}">
+            <span id="name-error" class="error text-red-500"></span>
 			<label for="age">Age</label>
 			<input type="text" name="age"  value="{{ person.age }}">
+            <span id="age-error" class="error text-red-500"></span>
 			<button type="submit">Add</button>
 		</form>
 	</body>
 </html>
+
+{{#each errorsA}}
+<span>this</span>
+{{/each}}
+{{!-- <input type = "hidden" id = "thingIWant" value ="{{JSON.stringify(errorsA || null)}}" /> --}}
+
+<script>
+const errors = document.getElementById("thingIWant").value;;
+if (errors) {
+  Object.keys(errors).forEach(error => {
+    const el = document.getElementById(error + "-error");
+    if (el) {
+      el.innerText = errors[error];
+    }
+  })
+}
+</script>
