@@ -7,7 +7,7 @@ import { init } from "../src/server";
 
 const personData = { name: "Sherlock Holmes", age: 32 }
 
-describe.only("server handles people - positive tests", async () => {
+describe("server handles people - positive tests", async () => {
 	let server: Server;
 
 	beforeEach((done) => {

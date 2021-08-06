@@ -60,3 +60,4 @@ exports.helloRoutes = [
         handler: sayHello
     }
 ];
+//# sourceMappingURL=hello.js.map

@@ -1,4 +1,5 @@
 import { Request, ResponseToolkit, ResponseObject, ServerRoute } from "@hapi/hapi";
+import Handlebars from "handlebars";
 
 import Joi from "joi";
 const ValidationError = Joi.ValidationError;
@@ -34,24 +35,32 @@ async function addPersonPost(request: Request, h: ResponseToolkit): Promise<Resp
     console.log(data);
     const o = schema.validate(data, { stripUnknown: true });
     if (o.error) {
-        throw o.error;
+        console.error(o.error);
+        const errors: { [key: string]: string } = {};
+        if (o.error instanceof ValidationError && o.error.isJoi) {
+            for (const detail of o.error.details) {
+                errors[detail.context!.key!] = detail.message;
+            }
+        } else {
+            console.error("error", o.error, "adding person");
+        }
+        console.log("returning a view");
+        return h.view("addPerson", { person: data, errorsA: errors, errorsJSON: JSON.stringify(errors) })
     }
     try {        
         data = (o.value as Person);
         people.push(data);
         return h.redirect("/people");
-    } catch (err) {
-        const errors: { [key: string]: string } = {};
-        if (err instanceof ValidationError && err.isJoi) {
-            for (const detail of err.details) {
-                errors[detail.context!.key!] = detail.message;
-            }
-        } else {
-            console.error("error", err, "adding person");
-        }
-        return h.view("addPerson", { person: data, errorsA: errors })
+    } 
+    catch (err) {
+        console.error(err);
+        throw err;
     }
 }
+
+Handlebars.registerHelper('toJSON', function(obj) {
+    return JSON.stringify(obj, null, 3);
+});
 
 export const peopleRoutes: ServerRoute[] = [
   { method: "GET", path: "/people", handler: showPeople },

@@ -14,7 +14,8 @@ export let server: Server;
 export const init = async function(): Promise<Server> {
     server = Hapi.server({
         port: process.env.PORT || 4000,
-        host: 'localhost'
+        host: 'localhost',
+        debug: { request: ['error'] }
     });
 
     await registerVision(server);
@@ -49,12 +50,19 @@ async function registerVision(server: Server) {
       cached = true;
     }
     server.log(["debug"], `Caching templates: ${cached}`);
+    
+    // var hbs = require("handlebars");
+    // hbs.Handlebars.registerHelper('toJSON', function(obj: any) {
+    //   return JSON.stringify(obj, null, 3);
+    // });
+
     server.views({
       engines: {
         hbs: require("handlebars")
       },
       relativeTo: __dirname + "/../",
       path: 'templates',
+      //helpersPath:'helpers',
       isCached: cached
     });
   }

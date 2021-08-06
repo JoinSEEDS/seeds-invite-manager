@@ -40,6 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.peopleRoutes = void 0;
+var handlebars_1 = __importDefault(require("handlebars"));
 var joi_1 = __importDefault(require("joi"));
 var ValidationError = joi_1.default.ValidationError;
 var schema = joi_1.default.object({
@@ -75,8 +76,25 @@ function addPersonPost(request, h) {
             data = request.payload;
             console.log(data);
             o = schema.validate(data, { stripUnknown: true });
+            console.log(o);
+            // if (o.error) {
+            //     console.error(o.error);
+            //     throw o.error;
+            // }
             if (o.error) {
-                throw o.error;
+                console.error(o.error);
+                errors = {};
+                if (o.error instanceof ValidationError && o.error.isJoi) {
+                    for (_i = 0, _a = o.error.details; _i < _a.length; _i++) {
+                        detail = _a[_i];
+                        errors[detail.context.key] = detail.message;
+                    }
+                }
+                else {
+                    console.error("error", o.error, "adding person");
+                }
+                console.log("returning a view");
+                return [2 /*return*/, h.view("addPerson", { person: data, errorsA: errors, errorsJSON: JSON.stringify(errors) })];
             }
             try {
                 data = o.value;
@@ -84,24 +102,19 @@ function addPersonPost(request, h) {
                 return [2 /*return*/, h.redirect("/people")];
             }
             catch (err) {
-                errors = {};
-                if (err instanceof ValidationError && err.isJoi) {
-                    for (_i = 0, _a = err.details; _i < _a.length; _i++) {
-                        detail = _a[_i];
-                        errors[detail.context.key] = detail.message;
-                    }
-                }
-                else {
-                    console.error("error", err, "adding person");
-                }
-                return [2 /*return*/, h.view("addPerson", { person: data, errorsA: errors })];
+                console.error(err);
+                throw err;
             }
             return [2 /*return*/];
         });
     });
 }
+handlebars_1.default.registerHelper('toJSON', function (obj) {
+    return JSON.stringify(obj, null, 3);
+});
 exports.peopleRoutes = [
     { method: "GET", path: "/people", handler: showPeople },
     { method: "GET", path: "/people/add", handler: addPersonGet },
     { method: "POST", path: "/people/add", handler: addPersonPost }
 ];
+//# sourceMappingURL=people.js.map

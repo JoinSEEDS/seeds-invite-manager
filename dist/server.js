@@ -51,7 +51,8 @@ var init = function () {
                 case 0:
                     exports.server = hapi_1.default.server({
                         port: process.env.PORT || 4000,
-                        host: 'localhost'
+                        host: 'localhost',
+                        debug: { request: ['error'] }
                     });
                     return [4 /*yield*/, registerVision(exports.server)];
                 case 1:
@@ -94,12 +95,17 @@ function registerVision(server) {
                         cached = true;
                     }
                     server.log(["debug"], "Caching templates: " + cached);
+                    // var hbs = require("handlebars");
+                    // hbs.Handlebars.registerHelper('toJSON', function(obj: any) {
+                    //   return JSON.stringify(obj, null, 3);
+                    // });
                     server.views({
                         engines: {
                             hbs: require("handlebars")
                         },
                         relativeTo: __dirname + "/../",
                         path: 'templates',
+                        //helpersPath:'helpers',
                         isCached: cached
                     });
                     return [2 /*return*/];
@@ -116,3 +122,4 @@ function index(request) {
     console.log("Processing request", request.info.id);
     return "Hello! Random act of kindness.";
 }
+//# sourceMappingURL=server.js.map

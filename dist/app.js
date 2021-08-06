@@ -29,3 +29,4 @@ server_1.init().then(function () { return server_1.start(); });
 //       return console.error(err);
 //     }
 // });
+//# sourceMappingURL=app.js.map

@@ -16,13 +16,8 @@
 	</body>
 </html>
 
-{{#each errorsA}}
-<span>this</span>
-{{/each}}
-{{!-- <input type = "hidden" id = "thingIWant" value ="{{JSON.stringify(errorsA || null)}}" /> --}}
-
 <script>
-const errors = document.getElementById("thingIWant").value;;
+const errors = {{{errorsJSON}}};
 if (errors) {
   Object.keys(errors).forEach(error => {
     const el = document.getElementById(error + "-error");
