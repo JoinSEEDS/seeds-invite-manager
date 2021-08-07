@@ -40,7 +40,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.peopleRoutes = void 0;
-var handlebars_1 = __importDefault(require("handlebars"));
 var joi_1 = __importDefault(require("joi"));
 var ValidationError = joi_1.default.ValidationError;
 var schema = joi_1.default.object({
@@ -76,11 +75,6 @@ function addPersonPost(request, h) {
             data = request.payload;
             console.log(data);
             o = schema.validate(data, { stripUnknown: true });
-            console.log(o);
-            // if (o.error) {
-            //     console.error(o.error);
-            //     throw o.error;
-            // }
             if (o.error) {
                 console.error(o.error);
                 errors = {};
@@ -109,12 +103,18 @@ function addPersonPost(request, h) {
         });
     });
 }
-handlebars_1.default.registerHelper('toJSON', function (obj) {
-    return JSON.stringify(obj, null, 3);
-});
+function removePersonGet(request, h) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            people.splice(request.params.id);
+            return [2 /*return*/, h.redirect("/people")];
+        });
+    });
+}
 exports.peopleRoutes = [
     { method: "GET", path: "/people", handler: showPeople },
     { method: "GET", path: "/people/add", handler: addPersonGet },
-    { method: "POST", path: "/people/add", handler: addPersonPost }
+    { method: "POST", path: "/people/add", handler: addPersonPost },
+    { method: "GET", path: "/people/remove/{id?}", handler: removePersonGet }
 ];
 //# sourceMappingURL=people.js.map

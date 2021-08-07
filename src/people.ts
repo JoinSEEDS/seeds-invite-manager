@@ -58,12 +58,15 @@ async function addPersonPost(request: Request, h: ResponseToolkit): Promise<Resp
     }
 }
 
-Handlebars.registerHelper('toJSON', function(obj) {
-    return JSON.stringify(obj, null, 3);
-});
+async function removePersonGet(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
+    people.splice(request.params.id);
+
+    return h.redirect("/people");
+}
 
 export const peopleRoutes: ServerRoute[] = [
   { method: "GET", path: "/people", handler: showPeople },
   { method: "GET", path: "/people/add", handler: addPersonGet },
-  { method: "POST", path: "/people/add", handler: addPersonPost }  
+  { method: "POST", path: "/people/add", handler: addPersonPost },
+  { method: "GET", path: "/people/remove/{id?}", handler: removePersonGet }
 ];

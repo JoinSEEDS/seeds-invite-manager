@@ -1,15 +1,9 @@
-<html>
-	<head>
-		<title>Purple People Eaters</title>
-	</head>
-	<body>
-		<ul>
-			{{#each people }}
-				<li class="person-entry">
-					{{ name }} - {{ age }}
-				</li>
-			{{/each}}
-		</ul>
-		<a href="/people/add">Add person</a>
-	</body>
-</html>
+<ul>
+	{{#each people }}
+		<li class="person-entry">
+			{{ name }} - {{ age }} <a href="/people/remove/{{@index}}"><i class="fa fa-trash"></i> X</a>
+		</li>
+	{{/each}}
+</ul>
+<a href="/people/add">Add person</a>
+	

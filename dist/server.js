@@ -42,6 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.start = exports.init = exports.server = void 0;
 var hapi_1 = __importDefault(require("@hapi/hapi"));
 var vision_1 = __importDefault(require("@hapi/vision"));
+var inert_1 = __importDefault(require("@hapi/inert"));
 var hello_1 = require("./hello");
 var people_1 = require("./people");
 var init = function () {
@@ -57,7 +58,19 @@ var init = function () {
                     return [4 /*yield*/, registerVision(exports.server)];
                 case 1:
                     _a.sent();
+                    return [4 /*yield*/, exports.server.register(inert_1.default)];
+                case 2:
+                    _a.sent();
                     // Routes will go here
+                    exports.server.route({
+                        method: 'GET',
+                        path: '/assets/{file*}',
+                        handler: {
+                            directory: {
+                                path: 'assets'
+                            }
+                        }
+                    });
                     exports.server.route({
                         method: "GET",
                         path: "/",
@@ -103,10 +116,13 @@ function registerVision(server) {
                         engines: {
                             hbs: require("handlebars")
                         },
-                        relativeTo: __dirname + "/../",
-                        path: 'templates',
-                        //helpersPath:'helpers',
-                        isCached: cached
+                        relativeTo: __dirname,
+                        path: './../templates',
+                        isCached: cached,
+                        //layout: './templates/layouts/layout.hbs',
+                        layout: true,
+                        layoutPath: './../templates/layouts',
+                        helpersPath: 'htmlHelpers',
                     });
                     return [2 /*return*/];
             }

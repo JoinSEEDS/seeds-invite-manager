@@ -4,6 +4,7 @@
 import Hapi from "@hapi/hapi";
 import { Request, Server } from "@hapi/hapi";
 import hapiVision from "@hapi/vision";
+import hapiInert from "@hapi/inert";
 
 import { helloRoutes } from "./hello";
 import { peopleRoutes } from "./people";
@@ -19,14 +20,26 @@ export const init = async function(): Promise<Server> {
     });
 
     await registerVision(server);
-
+    await server.register(hapiInert);
     // Routes will go here
+
+
+    server.route({  
+      method: 'GET',
+      path: '/assets/{file*}',
+      handler: {
+        directory: { 
+          path: 'assets'
+        }
+      }
+    });
 
     server.route({
         method: "GET",
         path: "/",
         handler: index
     });
+
 
     server.route(helloRoutes);
     server.route(peopleRoutes);
@@ -60,10 +73,13 @@ async function registerVision(server: Server) {
       engines: {
         hbs: require("handlebars")
       },
-      relativeTo: __dirname + "/../",
-      path: 'templates',
-      //helpersPath:'helpers',
-      isCached: cached
+      relativeTo: __dirname,
+      path: './../templates',
+      isCached: cached,
+      //layout: './templates/layouts/layout.hbs',
+      layout: true,
+      layoutPath: './../templates/layouts',
+      helpersPath: 'htmlHelpers',
     });
   }
 
