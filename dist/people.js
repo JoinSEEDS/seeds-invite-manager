@@ -106,7 +106,7 @@ function addPersonPost(request, h) {
 function removePersonGet(request, h) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            people.splice(request.params.id);
+            people.splice(request.params.id, 1);
             return [2 /*return*/, h.redirect("/people")];
         });
     });
@@ -115,6 +115,6 @@ exports.peopleRoutes = [
     { method: "GET", path: "/people", handler: showPeople },
     { method: "GET", path: "/people/add", handler: addPersonGet },
     { method: "POST", path: "/people/add", handler: addPersonPost },
-    { method: "GET", path: "/people/remove/{id?}", handler: removePersonGet }
+    { method: "GET", path: "/people/remove/{id}", handler: removePersonGet }
 ];
 //# sourceMappingURL=people.js.map

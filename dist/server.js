@@ -122,7 +122,7 @@ function registerVision(server) {
                         //layout: './templates/layouts/layout.hbs',
                         layout: true,
                         layoutPath: './../templates/layouts',
-                        helpersPath: 'htmlHelpers',
+                        helpersPath: 'helpers',
                     });
                     return [2 /*return*/];
             }

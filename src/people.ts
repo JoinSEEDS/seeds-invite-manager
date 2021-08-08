@@ -59,7 +59,7 @@ async function addPersonPost(request: Request, h: ResponseToolkit): Promise<Resp
 }
 
 async function removePersonGet(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
-    people.splice(request.params.id);
+    people.splice(request.params.id, 1);
 
     return h.redirect("/people");
 }
@@ -68,5 +68,5 @@ export const peopleRoutes: ServerRoute[] = [
   { method: "GET", path: "/people", handler: showPeople },
   { method: "GET", path: "/people/add", handler: addPersonGet },
   { method: "POST", path: "/people/add", handler: addPersonPost },
-  { method: "GET", path: "/people/remove/{id?}", handler: removePersonGet }
+  { method: "GET", path: "/people/remove/{id}", handler: removePersonGet }
 ];
