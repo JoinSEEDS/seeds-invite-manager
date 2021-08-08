@@ -17,7 +17,7 @@ describe("server handles people - positive tests", async () => {
 		server.stop().then(() => done());
 	});
 
-	it("can see existing people", async () => {
+	async function getPeople(){
 		const res = await server.inject({
 			method: "get",
 			url: "/people"
@@ -26,6 +26,12 @@ describe("server handles people - positive tests", async () => {
 		expect(res.payload).to.not.be.null;
 		const html = parse(res.payload);
 		const people = html.querySelectorAll("li.person-entry");
+		return people;
+	}
+
+	it("can see existing people", async () => {
+		var people = await getPeople();
+		
 		expect(people.length).to.equal(2);
 	});
 
@@ -46,15 +52,26 @@ describe("server handles people - positive tests", async () => {
 		expect(res.statusCode).to.equal(302);
 		expect(res.headers.location).to.equal("/people");
 
-		res = await server.inject({
-			method: "get",
-			url: "/people"
-		});
-		expect(res.statusCode).to.equal(200);
-		expect(res.payload).to.not.be.null;
-		const html = parse(res.payload);
-		const people = html.querySelectorAll("li.person-entry");
+		var people = await getPeople();
+
 		expect(people.length).to.equal(3);
+	});
+
+	it("can remove person from the list", async function() {
+		this.timeout(150000);
+		
+		var initialPeople = await getPeople();
+
+		let res = await server.inject({
+			method: "get",
+			url: "/people/remove/1",
+		});
+		expect(res.statusCode).to.equal(302);
+		expect(res.headers.location).to.equal("/people");
+
+		var people = await getPeople();
+
+		expect(people.length).to.equal(initialPeople.length - 1);
 	});
 })
 
