@@ -17,7 +17,9 @@
 </html>
 
 <script>
-const errors = {{{errorsJSON}}};
+//const errors = {{{errorsJSON}}};
+
+const errors = {{{toJSON errorsA}}};
 if (errors) {
   Object.keys(errors).forEach(error => {
     const el = document.getElementById(error + "-error");

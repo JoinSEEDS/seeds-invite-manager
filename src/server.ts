@@ -76,10 +76,9 @@ async function registerVision(server: Server) {
       relativeTo: __dirname,
       path: './../templates',
       isCached: cached,
-      //layout: './templates/layouts/layout.hbs',
       layout: true,
       layoutPath: './../templates/layouts',
-      helpersPath: 'helpers',
+      helpersPath: './htmlHelpers/',
     });
   }
 

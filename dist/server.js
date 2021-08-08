@@ -119,10 +119,9 @@ function registerVision(server) {
                         relativeTo: __dirname,
                         path: './../templates',
                         isCached: cached,
-                        //layout: './templates/layouts/layout.hbs',
                         layout: true,
                         layoutPath: './../templates/layouts',
-                        helpersPath: 'helpers',
+                        helpersPath: './htmlHelpers/',
                     });
                     return [2 /*return*/];
             }
