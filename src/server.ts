@@ -8,11 +8,18 @@ import hapiInert from "@hapi/inert";
 
 import { helloRoutes } from "./hello";
 import { peopleRoutes } from "./people";
+import { campaignRoutes } from "./alliance";
+import Airtable from "airtable";
 
 
 export let server: Server;
 
 export const init = async function(): Promise<Server> {
+
+    Airtable.configure({ apiKey: 'keyr1QkZKdenNFNR3' });
+
+    
+
     server = Hapi.server({
         port: process.env.PORT || 4000,
         host: 'localhost',
@@ -43,6 +50,7 @@ export const init = async function(): Promise<Server> {
 
     server.route(helloRoutes);
     server.route(peopleRoutes);
+    server.route(campaignRoutes);
 
     return server;
 };

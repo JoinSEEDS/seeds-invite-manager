@@ -45,11 +45,14 @@ var vision_1 = __importDefault(require("@hapi/vision"));
 var inert_1 = __importDefault(require("@hapi/inert"));
 var hello_1 = require("./hello");
 var people_1 = require("./people");
+var alliance_1 = require("./alliance");
+var airtable_1 = __importDefault(require("airtable"));
 var init = function () {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    airtable_1.default.configure({ apiKey: 'keyr1QkZKdenNFNR3' });
                     exports.server = hapi_1.default.server({
                         port: process.env.PORT || 4000,
                         host: 'localhost',
@@ -78,6 +81,7 @@ var init = function () {
                     });
                     exports.server.route(hello_1.helloRoutes);
                     exports.server.route(people_1.peopleRoutes);
+                    exports.server.route(alliance_1.campaignRoutes);
                     return [2 /*return*/, exports.server];
             }
         });
