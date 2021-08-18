@@ -55,8 +55,21 @@ async function listCampaigns(request: Request, h: ResponseToolkit): Promise<Resp
     return h.view("campaigns",{ campaigns });
 }
 
+async function campaignInfo(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
+    var campaign = campaigns.find( (el) => el.id == request.params.id );
+
+    if ( campaign == null ) {
+        return h.response().code(404);
+    }
+
+    return h.view("campaignInfo",{ campaign });
+}
+
+
+
 export const campaignRoutes: ServerRoute[] = [
     { method: "GET", path: "/campaigns", handler: listCampaigns },
+    { method: "GET", path: "/campaigns/info/{id}", handler: campaignInfo },
     { method: "GET", path: "/campaigns/sync", handler: syncCampaigns },
     { method: "GET", path: "/campaigns/json", handler: jsonCampaigns },
   ];

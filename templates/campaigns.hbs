@@ -1,8 +1,30 @@
-<table class="table">
-    <tbody>
-        {{#each campaigns}}
-            <td>{{Title}}</td>
-            <td>{{"Seeds Requested"}}</td>
-        {{/each}}
-    </tbody>
-</table>
+<h1>Campaign List</h1>
+<div class="row">
+    {{#each campaigns}}
+        <div class="card col-3 m-3" >
+            <img src="{{"Picture URL"}}"  class="card-img-top mt-3" alt="{{Title}}" />
+            <div class="card-body">
+                <h5 class="card-title text-center">
+                    <a href="/campaigns/info/{{id}}" >
+                        {{Title}}
+                    </a>
+                </h5>
+                {{!-- <p class="card-text">
+                    {{Description}}
+                </p> --}}
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">§ {{formatNumber [Seeds Requested]}}</li>
+                <li class="list-group-item">
+                    <span class="badge bg-{{passedStatusColor [Voting Status]}}">{{[Voting Status]}}</span>
+                </li>
+                <li class="list-group-item">A third item</li>
+            </ul>
+            <div class="card-body">
+                <a href="#" class="card-link">Card link</a>
+                <a href="#" class="card-link">Another link</a>
+            </div>
+        </div>
+    {{/each}}
+
+</div>

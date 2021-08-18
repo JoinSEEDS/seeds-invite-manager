@@ -95,8 +95,21 @@ function listCampaigns(request, h) {
         });
     });
 }
+function campaignInfo(request, h) {
+    return __awaiter(this, void 0, void 0, function () {
+        var campaign;
+        return __generator(this, function (_a) {
+            campaign = campaigns.find(function (el) { return el.id == request.params.id; });
+            if (campaign == null) {
+                return [2 /*return*/, h.response().code(404)];
+            }
+            return [2 /*return*/, h.view("campaignInfo", { campaign: campaign })];
+        });
+    });
+}
 exports.campaignRoutes = [
     { method: "GET", path: "/campaigns", handler: listCampaigns },
+    { method: "GET", path: "/campaigns/info/{id}", handler: campaignInfo },
     { method: "GET", path: "/campaigns/sync", handler: syncCampaigns },
     { method: "GET", path: "/campaigns/json", handler: jsonCampaigns },
 ];
