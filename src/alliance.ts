@@ -12,7 +12,7 @@ async function syncCampaigns(request: Request, h: ResponseToolkit): Promise<Resp
 
     base('Campaign').select({
         // Selecting the first 3 records in Grid view:
-        maxRecords: 3,
+        maxRecords: 30,
         view: "Grid view"
     }).eachPage(function page(records, fetchNextPage) {
         // This function (`page`) will get called for each page of records.

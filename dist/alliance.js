@@ -50,7 +50,7 @@ function syncCampaigns(request, h) {
             base = new airtable_1.default().base('appgpyECcHrR7yreI');
             base('Campaign').select({
                 // Selecting the first 3 records in Grid view:
-                maxRecords: 3,
+                maxRecords: 30,
                 view: "Grid view"
             }).eachPage(function page(records, fetchNextPage) {
                 // This function (`page`) will get called for each page of records.

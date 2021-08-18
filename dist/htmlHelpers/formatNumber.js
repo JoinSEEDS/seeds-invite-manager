@@ -16,6 +16,9 @@ exports.formatNumber = void 0;
  * Demo: http://jsfiddle.net/DennyLoko/6sR87/
  */
 function formatNumber(value, options) {
+    if (!value) {
+        return '-';
+    }
     // Helper parameters
     var dl = options.hash['decimalLength'] || 2;
     var ts = options.hash['thousandsSep'] || ',';
