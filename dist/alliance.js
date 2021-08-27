@@ -47,39 +47,52 @@ function syncCampaigns(request, h) {
     return __awaiter(this, void 0, void 0, function () {
         var base;
         return __generator(this, function (_a) {
-            base = new airtable_1.default().base('appgpyECcHrR7yreI');
-            base('Campaign').select({
-                // Selecting the first 3 records in Grid view:
-                maxRecords: 30,
-                view: "Grid view"
-            }).eachPage(function page(records, fetchNextPage) {
-                // This function (`page`) will get called for each page of records.
-                records.forEach(function (record) {
-                    var campaign = new Campaign_1.Campaign();
-                    campaign.id = record.id;
-                    Object.assign(campaign, record.fields);
-                    var objIndex = campaigns.findIndex((function (obj) { return obj.id == campaign.id; }));
-                    if (objIndex < 0) {
-                        campaigns.push(campaign);
-                    }
-                    else {
-                        campaigns[objIndex] = campaign;
-                    }
-                    console.log('Retrieved', record.get('Title'));
-                });
-                // To fetch the next page of records, call `fetchNextPage`.
-                // If there are more records, `page` will get called again.
-                // If there are no more records, `done` will get called.
-                fetchNextPage();
-            }, function done(err) {
-                if (err) {
-                    console.error(err);
-                    return;
-                }
-            });
-            return [2 /*return*/, h.response("Records: " + campaigns.length)];
+            switch (_a.label) {
+                case 0:
+                    base = new airtable_1.default().base('appgpyECcHrR7yreI');
+                    base('Campaign').select({
+                        // Selecting the first 3 records in Grid view:
+                        maxRecords: 30,
+                        view: "Grid view"
+                    }).eachPage(function page(records, fetchNextPage) {
+                        // This function (`page`) will get called for each page of records.
+                        records.forEach(function (record) {
+                            var campaign = new Campaign_1.Campaign();
+                            campaign.id = record.id;
+                            Object.assign(campaign, record.fields);
+                            var objIndex = campaigns.findIndex((function (obj) { return obj.id == campaign.id; }));
+                            if (objIndex < 0) {
+                                campaigns.push(campaign);
+                            }
+                            else {
+                                campaigns[objIndex] = campaign;
+                            }
+                            console.log('Retrieved', record.get('Title'));
+                        });
+                        // To fetch the next page of records, call `fetchNextPage`.
+                        // If there are more records, `page` will get called again.
+                        // If there are no more records, `done` will get called.
+                        fetchNextPage();
+                    }, function done(err) {
+                        if (err) {
+                            console.error(err);
+                            return;
+                        }
+                    });
+                    //return h.response("Records: " + campaigns.length);
+                    //return h.view("people.hbs", { people: people });
+                    return [4 /*yield*/, delay(2000)];
+                case 1:
+                    //return h.response("Records: " + campaigns.length);
+                    //return h.view("people.hbs", { people: people });
+                    _a.sent();
+                    return [2 /*return*/, h.redirect("/network/campaigns")];
+            }
         });
     });
+}
+function delay(ms) {
+    return new Promise(function (resolve) { return setTimeout(resolve, ms); });
 }
 function jsonCampaigns(request, h) {
     return __awaiter(this, void 0, void 0, function () {
@@ -91,9 +104,18 @@ function jsonCampaigns(request, h) {
 function listCampaigns(request, h) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            return [2 /*return*/, h.view("campaigns", { campaigns: campaigns })];
+            return [2 /*return*/, h.view("campaigns", { campaigns: campaigns.sort(function (a, b) { return compare(a, b, "Proposal ID"); }).reverse() })];
         });
     });
+}
+function compare(a, b, fieldName) {
+    if (a[fieldName] < b[fieldName]) {
+        return -1;
+    }
+    if (a[fieldName] > b[fieldName]) {
+        return 1;
+    }
+    return 0;
 }
 function campaignInfo(request, h) {
     return __awaiter(this, void 0, void 0, function () {

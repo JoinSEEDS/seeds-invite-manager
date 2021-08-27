@@ -1,7 +1,7 @@
 
 'use strict';
 
-import Hapi from "@hapi/hapi";
+import Hapi, { ServerRoute } from "@hapi/hapi";
 import { Request, Server } from "@hapi/hapi";
 import hapiVision from "@hapi/vision";
 import hapiInert from "@hapi/inert";
@@ -14,11 +14,15 @@ import Airtable from "airtable";
 
 export let server: Server;
 
+var prefix = "";
+
 export const init = async function(): Promise<Server> {
 
     Airtable.configure({ apiKey: 'keyr1QkZKdenNFNR3' });
 
-    
+    if (true) {
+      prefix = "/network";
+    }
 
     server = Hapi.server({
         port: process.env.PORT || 4000,
@@ -33,7 +37,7 @@ export const init = async function(): Promise<Server> {
 
     server.route({  
       method: 'GET',
-      path: '/assets/{file*}',
+      path: prefix+'/assets/{file*}',
       handler: {
         directory: { 
           path: 'assets'
@@ -43,17 +47,24 @@ export const init = async function(): Promise<Server> {
 
     server.route({
         method: "GET",
-        path: "/",
+        path: prefix + "/",
         handler: index
     });
 
 
-    server.route(helloRoutes);
-    server.route(peopleRoutes);
-    server.route(campaignRoutes);
+    server.route(setPrefix(helloRoutes));
+    server.route(setPrefix(peopleRoutes));
+    server.route(setPrefix(campaignRoutes));
 
     return server;
 };
+
+function setPrefix(routes: ServerRoute[]){
+  routes.forEach(route => {
+    route.path = prefix + route.path;
+  });
+  return routes;
+}
 
 export const start = async function (): Promise<void> {
     console.log(`Listening on ${server.settings.host}:${server.settings.port}`);

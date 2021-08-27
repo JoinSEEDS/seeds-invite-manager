@@ -1,0 +1,10 @@
+{
+    "css.styleSheets": [
+        "assets/style.css",
+        "assets/css/*.css",
+        "${fileBasenameNoExtension}.css"
+    ],
+    "css.enabledLanguages": [
+        "html", "hbs"
+    ]
+}

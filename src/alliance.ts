@@ -41,8 +41,15 @@ async function syncCampaigns(request: Request, h: ResponseToolkit): Promise<Resp
         if (err) { console.error(err); return; }
     });
     
-    return h.response("Records: " + campaigns.length);
+    //return h.response("Records: " + campaigns.length);
     //return h.view("people.hbs", { people: people });
+    await delay(2000);
+
+    return h.redirect("/network/campaigns");
+}
+
+function delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
 }
 
 async function jsonCampaigns(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
@@ -52,7 +59,17 @@ async function jsonCampaigns(request: Request, h: ResponseToolkit): Promise<Resp
 
 async function listCampaigns(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
 
-    return h.view("campaigns",{ campaigns });
+    return h.view("campaigns",{ campaigns: campaigns.sort((a,b)=> compare(a,b,"Proposal ID")).reverse() });
+}
+
+function compare( a: any, b: any, fieldName: string ) {
+    if ( a[fieldName] < b[fieldName] ){
+      return -1;
+    }
+    if ( a[fieldName] > b[fieldName] ){
+      return 1;
+    }
+    return 0;
 }
 
 async function campaignInfo(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
