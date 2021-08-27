@@ -7,15 +7,9 @@
     "justrun": "node dist/app.js",
     "start": "tsc && node dist/app.js",
     "test": "cross-env NODE_ENV=test mocha -r ts-node/register test/**/*.test.ts",
-    "dev:tsc": "tsc --watch -p .",
-    "dev:serve": "nodemon -e js -w lib dist/app.js",
-    "dev": "run-p dev:*",
     "clean": "npx rimraf dist",
     "clean:node": "npx rimraf node_modules",
-    "dev:watch": "npx tsc-watch --onSuccess \"node ./dist/app.js\"",
-    "compile": "tsc && node dist/app.js",
-    "dev:nw": "nodemon --watch src/ --exec \"npm run compile\" --verbose -e ts",
-    "dev:watch-new":"npx tsc-watch --onSuccess \"nodemon\""
+    "dev": "npx tsc-watch --onSuccess \"nodemon\""
   },
   "author": "apostolov87@gmail.com",
   "license": "ISC",
