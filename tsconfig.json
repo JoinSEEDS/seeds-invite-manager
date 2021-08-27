@@ -10,7 +10,8 @@
         "sourceMap": true
       },
     "exclude": [
-        "test"
+        "test",
+        "dist/**"
     ],
     "lib": ["es2015"]
   }

@@ -2,6 +2,7 @@ import { Request, ResponseToolkit, ResponseObject, ServerRoute } from "@hapi/hap
 import Airtable from "airtable";
 import Handlebars from "handlebars";
 import { Campaign } from './models/Campaign';
+import { IIndexable } from "./models/IIndexable";
 
 
 const campaigns:Campaign[] = [];
@@ -16,14 +17,26 @@ async function syncCampaigns(request: Request, h: ResponseToolkit): Promise<Resp
         view: "Grid view"
     }).eachPage(function page(records, fetchNextPage) {
         // This function (`page`) will get called for each page of records.
-    
-        records.forEach(function(record) {
+        records.forEach(function (record) {
             var campaign = new Campaign();
             campaign.id = record.id;
-            Object.assign(campaign,record.fields);
+            Object.assign(campaign, record.fields);
+
+            Object.keys(campaign).forEach(function(key) {
+                var indexable = campaign as IIndexable;
+                // Copy the value
+                var val = indexable[key],
+                  newKey = key.replace(/\s+/g, '');
+                
+                // Remove key-value from object
+                delete indexable[key];
             
+                // Add value with new key
+                indexable[newKey] = val;
+              });
+
             var objIndex = campaigns.findIndex((obj => obj.id == campaign.id));
-            if(objIndex<0){
+            if (objIndex < 0) {
                 campaigns.push(campaign);
             } else {
                 campaigns[objIndex] = campaign;
@@ -31,19 +44,20 @@ async function syncCampaigns(request: Request, h: ResponseToolkit): Promise<Resp
 
             console.log('Retrieved', record.get('Title'));
         });
-    
+
         // To fetch the next page of records, call `fetchNextPage`.
         // If there are more records, `page` will get called again.
         // If there are no more records, `done` will get called.
         fetchNextPage();
-    
+
     }, function done(err) {
         if (err) { console.error(err); return; }
+
     });
     
     //return h.response("Records: " + campaigns.length);
     //return h.view("people.hbs", { people: people });
-    await delay(2000);
+    await delay(1500);
 
     return h.redirect("/network/campaigns");
 }
@@ -58,8 +72,8 @@ async function jsonCampaigns(request: Request, h: ResponseToolkit): Promise<Resp
 }
 
 async function listCampaigns(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
-
-    return h.view("campaigns",{ campaigns: campaigns.sort((a,b)=> compare(a,b,"Proposal ID")).reverse() });
+    
+    return h.view("campaigns",{ campaigns: campaigns.sort((a,b)=> compare(a,b,"ProposalID")).reverse() });
 }
 
 function compare( a: any, b: any, fieldName: string ) {

@@ -1,33 +1,35 @@
-<h1>Campaign List</h1>
+<div id="campaignsPage">
+    <h1>Campaign List</h1>
 
-<div class="row">
-    {{#each campaigns}}
-    <div class="col-3">
-        <div class="card" >
-            <img src="{{"Picture URL"}}"  class="card-img-top mt-3" alt="{{Title}}" />
-            <div class="card-body">
-                <h5 class="card-title text-center">
-                    <a href="/network/campaigns/info/{{id}}" >
-                        {{Title}}
-                    </a>
-                </h5>
-                {{!-- <p class="card-text">
-                    {{Description}}
-                </p> --}}
-            </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">§ {{formatNumber [Seeds Requested]}}</li>
-                <li class="list-group-item">
-                    <span class="badge bg-{{passedStatusColor [Voting Status]}}">{{[Voting Status]}}</span>
-                </li>
-                <li class="list-group-item">A third item</li>
-            </ul>
-            <div class="card-body">
-                <a href="#" class="card-link">Card link</a>
-                <a href="#" class="card-link">Another link</a>
+    <div class="row">
+        {{#each campaigns}}
+        <div class="col-3">
+            <div class="card" >
+                <img src="{{PictureURL}}"  class="card-img-top mt-3" alt="{{Title}}" />
+                <div class="card-body">
+                    <h5 class="card-title text-center">
+                        <a href="/network/campaigns/info/{{id}}" >
+                            {{Title}}
+                        </a>
+                    </h5>
+                    {{!-- <p class="card-text">
+                        {{Description}}
+                    </p> --}}
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">§ {{formatNumber [SeedsRequested]}}</li>
+                    <li class="list-group-item">
+                        <span class="badge bg-{{passedStatusColor [VotingStatus]}}">{{[VotingStatus]}}</span>
+                    </li>
+                    <li class="list-group-item">A third item</li>
+                </ul>
+                <div class="card-body">
+                    <a href="#" class="card-link">Card link</a>
+                    <a href="#" class="card-link">Another link</a>
+                </div>
             </div>
         </div>
-    </div>
-    {{/each}}
+        {{/each}}
 
+    </div>
 </div>

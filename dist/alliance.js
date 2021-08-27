@@ -60,6 +60,15 @@ function syncCampaigns(request, h) {
                             var campaign = new Campaign_1.Campaign();
                             campaign.id = record.id;
                             Object.assign(campaign, record.fields);
+                            Object.keys(campaign).forEach(function (key) {
+                                var indexable = campaign;
+                                // Copy the value
+                                var val = indexable[key], newKey = key.replace(/\s+/g, '');
+                                // Remove key-value from object
+                                delete indexable[key];
+                                // Add value with new key
+                                indexable[newKey] = val;
+                            });
                             var objIndex = campaigns.findIndex((function (obj) { return obj.id == campaign.id; }));
                             if (objIndex < 0) {
                                 campaigns.push(campaign);
@@ -81,7 +90,7 @@ function syncCampaigns(request, h) {
                     });
                     //return h.response("Records: " + campaigns.length);
                     //return h.view("people.hbs", { people: people });
-                    return [4 /*yield*/, delay(2000)];
+                    return [4 /*yield*/, delay(1500)];
                 case 1:
                     //return h.response("Records: " + campaigns.length);
                     //return h.view("people.hbs", { people: people });
@@ -104,7 +113,7 @@ function jsonCampaigns(request, h) {
 function listCampaigns(request, h) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            return [2 /*return*/, h.view("campaigns", { campaigns: campaigns.sort(function (a, b) { return compare(a, b, "Proposal ID"); }).reverse() })];
+            return [2 /*return*/, h.view("campaigns", { campaigns: campaigns.sort(function (a, b) { return compare(a, b, "ProposalID"); }).reverse() })];
         });
     });
 }
