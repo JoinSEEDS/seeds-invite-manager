@@ -113,7 +113,11 @@ function jsonCampaigns(request, h) {
 function listCampaigns(request, h) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            return [2 /*return*/, h.view("campaigns", { campaigns: campaigns.sort(function (a, b) { return compare(a, b, "ProposalID"); }).reverse() })];
+            return [2 /*return*/, h.view("campaigns", {
+                    campaigns: campaigns.sort(function (a, b) { return compare(a, b, "ProposalID"); }).reverse(),
+                    sumSeeds: campaigns.reduce(function (a, b) { return a + b.SeedsRequested; }, 0),
+                    campaignsCount: campaigns.length
+                })];
         });
     });
 }

@@ -73,7 +73,11 @@ async function jsonCampaigns(request: Request, h: ResponseToolkit): Promise<Resp
 
 async function listCampaigns(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     
-    return h.view("campaigns",{ campaigns: campaigns.sort((a,b)=> compare(a,b,"ProposalID")).reverse() });
+    return h.view("campaigns",{ 
+        campaigns: campaigns.sort((a,b)=> compare(a,b,"ProposalID")).reverse(),
+        sumSeeds: campaigns.reduce((a, b) => a + b.SeedsRequested, 0),
+        campaignsCount:campaigns.length
+    });
 }
 
 function compare( a: any, b: any, fieldName: string ) {
