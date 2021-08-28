@@ -17,6 +17,7 @@
     "@popperjs/core": "^2.9.3",
     "@types/airtable": "^0.10.1",
     "@types/chai": "^4.2.21",
+    "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.13",
     "@types/handlebars": "^4.1.0",
     "@types/handlebars-helpers": "^0.5.3",

@@ -10,6 +10,10 @@ import { helloRoutes } from "./hello";
 import { peopleRoutes } from "./people";
 import { campaignRoutes } from "./alliance";
 import Airtable from "airtable";
+import * as dotenv from "dotenv";
+
+
+dotenv.config({ path: '.env' });
 
 
 export let server: Server;
@@ -18,7 +22,7 @@ var prefix = "";
 
 export const init = async function(): Promise<Server> {
 
-    Airtable.configure({ apiKey: 'keyr1QkZKdenNFNR3' });
+    Airtable.configure({ apiKey: process.env.AIRTABLE_APIKEY });
 
     if (true) {
       prefix = "/network";
