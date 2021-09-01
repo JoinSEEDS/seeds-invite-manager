@@ -45,59 +45,57 @@ var Campaign_1 = require("./models/Campaign");
 var campaigns = [];
 function syncCampaigns(request, h) {
     return __awaiter(this, void 0, void 0, function () {
-        var base;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    base = new airtable_1.default().base('appgpyECcHrR7yreI');
-                    base('Campaign').select({
-                        // Selecting the first 3 records in Grid view:
-                        maxRecords: 30,
-                        view: "Grid view"
-                    }).eachPage(function page(records, fetchNextPage) {
-                        // This function (`page`) will get called for each page of records.
-                        records.forEach(function (record) {
-                            var campaign = new Campaign_1.Campaign();
-                            campaign.id = record.id;
-                            Object.assign(campaign, record.fields);
-                            Object.keys(campaign).forEach(function (key) {
-                                var indexable = campaign;
-                                // Copy the value
-                                var val = indexable[key], newKey = key.replace(/\s+/g, '');
-                                // Remove key-value from object
-                                delete indexable[key];
-                                // Add value with new key
-                                indexable[newKey] = val;
-                            });
-                            var objIndex = campaigns.findIndex((function (obj) { return obj.id == campaign.id; }));
-                            if (objIndex < 0) {
-                                campaigns.push(campaign);
-                            }
-                            else {
-                                campaigns[objIndex] = campaign;
-                            }
-                            console.log('Retrieved', record.get('Title'));
-                        });
-                        // To fetch the next page of records, call `fetchNextPage`.
-                        // If there are more records, `page` will get called again.
-                        // If there are no more records, `done` will get called.
-                        fetchNextPage();
-                    }, function done(err) {
-                        if (err) {
-                            console.error(err);
-                            return;
-                        }
-                    });
-                    //return h.response("Records: " + campaigns.length);
-                    //return h.view("people.hbs", { people: people });
+                    refreshFromAirtable();
                     return [4 /*yield*/, delay(1500)];
                 case 1:
-                    //return h.response("Records: " + campaigns.length);
-                    //return h.view("people.hbs", { people: people });
                     _a.sent();
                     return [2 /*return*/, h.redirect("/network/campaigns")];
             }
         });
+    });
+}
+function refreshFromAirtable() {
+    var base = new airtable_1.default().base('appgpyECcHrR7yreI');
+    base('Campaign').select({
+        // Selecting the first 3 records in Grid view:
+        maxRecords: 30,
+        view: "Grid view"
+    }).eachPage(function page(records, fetchNextPage) {
+        // This function (`page`) will get called for each page of records.
+        records.forEach(function (record) {
+            var campaign = new Campaign_1.Campaign();
+            campaign.id = record.id;
+            Object.assign(campaign, record.fields);
+            Object.keys(campaign).forEach(function (key) {
+                var indexable = campaign;
+                // Copy the value
+                var val = indexable[key], newKey = key.replace(/\s+/g, '');
+                // Remove key-value from object
+                delete indexable[key];
+                // Add value with new key
+                indexable[newKey] = val;
+            });
+            var objIndex = campaigns.findIndex((function (obj) { return obj.id == campaign.id; }));
+            if (objIndex < 0) {
+                campaigns.push(campaign);
+            }
+            else {
+                campaigns[objIndex] = campaign;
+            }
+            console.log('Retrieved', record.get('Title'));
+        });
+        // To fetch the next page of records, call `fetchNextPage`.
+        // If there are more records, `page` will get called again.
+        // If there are no more records, `done` will get called.
+        fetchNextPage();
+    }, function done(err) {
+        if (err) {
+            console.error(err);
+            return;
+        }
     });
 }
 function delay(ms) {
@@ -112,12 +110,24 @@ function jsonCampaigns(request, h) {
 }
 function listCampaigns(request, h) {
     return __awaiter(this, void 0, void 0, function () {
+        var filtered;
         return __generator(this, function (_a) {
-            return [2 /*return*/, h.view("campaigns", {
-                    campaigns: campaigns.sort(function (a, b) { return compare(a, b, "ProposalID"); }).reverse(),
-                    sumSeeds: campaigns.reduce(function (a, b) { return a + b.SeedsRequested; }, 0),
-                    campaignsCount: campaigns.length
-                })];
+            switch (_a.label) {
+                case 0:
+                    if (!(!campaigns || campaigns.length == 0)) return [3 /*break*/, 2];
+                    refreshFromAirtable();
+                    return [4 /*yield*/, delay(1500)];
+                case 1:
+                    _a.sent();
+                    _a.label = 2;
+                case 2:
+                    filtered = campaigns.filter(function (item) { return item.VotingStatus == "Passed"; });
+                    return [2 /*return*/, h.view("campaigns", {
+                            campaigns: filtered.sort(function (a, b) { return compare(a, b, "ProposalID"); }).reverse(),
+                            sumSeeds: filtered.reduce(function (a, b) { return a + b.SeedsRequested; }, 0),
+                            campaignsCount: filtered.length
+                        })];
+            }
         });
     });
 }

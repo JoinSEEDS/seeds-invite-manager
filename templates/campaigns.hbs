@@ -23,8 +23,16 @@
                     <li class="list-group-item">§ {{formatNumber [SeedsRequested]}}</li>
                     <li class="list-group-item">
                         <span class="badge bg-{{passedStatusColor [VotingStatus]}}">{{[VotingStatus]}}</span>
+                        <span class="badge bg-secondary rounded-pill">
+                            <i class="fa fa-arrow-up"></i>
+                            {{Upvotes}}
+                            <i class="fa fa-arrow-down"></i>
+                            {{Downvotes}}
+                        </span>
                     </li>
-                    <li class="list-group-item">A third item</li>
+                    <li class="list-group-item">
+                        
+                    </li>
                 </ul>
                 <div class="card-body">
                     <a href="#" class="card-link">Card link</a>

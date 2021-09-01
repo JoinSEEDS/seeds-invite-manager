@@ -9,6 +9,14 @@ const campaigns:Campaign[] = [];
 
 async function syncCampaigns(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     
+    refreshFromAirtable();
+
+    await delay(1500);
+
+    return h.redirect("/network/campaigns");
+}
+
+function refreshFromAirtable(){
     var base = new Airtable().base('appgpyECcHrR7yreI');
 
     base('Campaign').select({
@@ -54,12 +62,6 @@ async function syncCampaigns(request: Request, h: ResponseToolkit): Promise<Resp
         if (err) { console.error(err); return; }
 
     });
-    
-    //return h.response("Records: " + campaigns.length);
-    //return h.view("people.hbs", { people: people });
-    await delay(1500);
-
-    return h.redirect("/network/campaigns");
 }
 
 function delay(ms: number) {
@@ -72,11 +74,17 @@ async function jsonCampaigns(request: Request, h: ResponseToolkit): Promise<Resp
 }
 
 async function listCampaigns(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
+    if ( !campaigns || campaigns.length == 0 ) {
+        refreshFromAirtable();
+        await delay(1500);
+    }
     
+    var filtered = campaigns.filter(item => item.VotingStatus == "Passed");
+
     return h.view("campaigns",{ 
-        campaigns: campaigns.sort((a,b)=> compare(a,b,"ProposalID")).reverse(),
-        sumSeeds: campaigns.reduce((a, b) => a + b.SeedsRequested, 0),
-        campaignsCount:campaigns.length
+        campaigns: filtered.sort((a,b)=> compare(a,b,"ProposalID")).reverse(),
+        sumSeeds: filtered.reduce((a, b) => a + b.SeedsRequested, 0),
+        campaignsCount: filtered.length
     });
 }
 
