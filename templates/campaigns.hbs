@@ -8,7 +8,7 @@
         {{#each campaigns}}
         <div class="col-3">
             <div class="card" >
-                <img src="{{PictureURL}}"  class="card-img-top mt-3" alt="{{Title}}" />
+                <img src="{{ImageUrl}}"  class="card-img-top mt-3" alt="{{Title}}" />
                 <div class="card-body">
                     <h5 class="card-title text-center">
                         <a href="{{checkPrefix '/campaigns/info/'}}{{ProposalID}}" >
@@ -42,7 +42,16 @@
                 </ul>
                 <div class="card-body">
                     {{#if OrganizationAccount}}
-                    <a href="https://telos.bloks.io/account/{{OrganizationAccount}}" class="card-link" target="_blank">{{OrganizationAccount}}</a>
+                    
+                    <a href="https://telos.bloks.io/account/{{OrganizationAccount}}" class="card-link" target="_blank">
+                    <i class="fas fa-circle" style="color:blueviolet"></i>
+                    {{OrganizationAccount}}
+                    </a>
+                    
+                    <a href="{{checkPrefix '/organizations/info/'}}{{OrganizationAccount}}" class="card-link">
+                    <i class="fas fa-link"></i>
+                    {{OrganizationAccount}}
+                    </a>
                     {{/if}}
                 </div>
             </div>
