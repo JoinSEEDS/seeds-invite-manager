@@ -11,22 +11,16 @@ import { peopleRoutes } from "./people";
 import { campaignRoutes } from "./alliance";
 import Airtable from "airtable";
 import * as dotenv from "dotenv";
-
+import { prefix } from './infrastructure/routeManager';
 
 dotenv.config({ path: '.env' });
 
 
 export let server: Server;
 
-var prefix = "";
-
 export const init = async function(): Promise<Server> {
 
     Airtable.configure({ apiKey: process.env.AIRTABLE_APIKEY });
-
-    if (true) {
-      prefix = "/network";
-    }
 
     server = Hapi.server({
         port: process.env.PORT || 4000,
@@ -41,7 +35,7 @@ export const init = async function(): Promise<Server> {
 
     server.route({  
       method: 'GET',
-      path: prefix+'/assets/{file*}',
+      path: prefix('/assets/{file*}'),
       handler: {
         directory: { 
           path: 'assets'
@@ -51,7 +45,7 @@ export const init = async function(): Promise<Server> {
 
     server.route({
         method: "GET",
-        path: prefix + "/",
+        path: prefix("/"),
         handler: index
     });
 
@@ -65,7 +59,7 @@ export const init = async function(): Promise<Server> {
 
 function setPrefix(routes: ServerRoute[]){
   routes.forEach(route => {
-    route.path = prefix + route.path;
+    route.path = prefix(route.path);
   });
   return routes;
 }

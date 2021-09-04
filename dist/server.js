@@ -67,17 +67,14 @@ var people_1 = require("./people");
 var alliance_1 = require("./alliance");
 var airtable_1 = __importDefault(require("airtable"));
 var dotenv = __importStar(require("dotenv"));
+var routeManager_1 = require("./infrastructure/routeManager");
 dotenv.config({ path: '.env' });
-var prefix = "";
 var init = function () {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     airtable_1.default.configure({ apiKey: process.env.AIRTABLE_APIKEY });
-                    if (true) {
-                        prefix = "/network";
-                    }
                     exports.server = hapi_1.default.server({
                         port: process.env.PORT || 4000,
                         host: 'localhost',
@@ -92,7 +89,7 @@ var init = function () {
                     // Routes will go here
                     exports.server.route({
                         method: 'GET',
-                        path: prefix + '/assets/{file*}',
+                        path: routeManager_1.prefix('/assets/{file*}'),
                         handler: {
                             directory: {
                                 path: 'assets'
@@ -101,7 +98,7 @@ var init = function () {
                     });
                     exports.server.route({
                         method: "GET",
-                        path: prefix + "/",
+                        path: routeManager_1.prefix("/"),
                         handler: index
                     });
                     exports.server.route(setPrefix(hello_1.helloRoutes));
@@ -115,7 +112,7 @@ var init = function () {
 exports.init = init;
 function setPrefix(routes) {
     routes.forEach(function (route) {
-        route.path = prefix + route.path;
+        route.path = routeManager_1.prefix(route.path);
     });
     return routes;
 }

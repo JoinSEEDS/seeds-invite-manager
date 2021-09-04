@@ -2,7 +2,7 @@
     <div class="float-end h3">
        {{campaignsCount}} Campaigns ~ § {{formatNumber sumSeeds}}
     </div>
-    <h1>Campaign List</h1>
+    <h1>Campaigns List</h1>
 
     <div class="row">
         {{#each campaigns}}
@@ -11,7 +11,7 @@
                 <img src="{{PictureURL}}"  class="card-img-top mt-3" alt="{{Title}}" />
                 <div class="card-body">
                     <h5 class="card-title text-center">
-                        <a href="/network/campaigns/info/{{id}}" >
+                        <a href="{{checkPrefix '/campaigns/info/'}}{{id}}" >
                             {{Title}}
                         </a>
                     </h5>
