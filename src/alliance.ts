@@ -25,6 +25,7 @@ async function jsonCampaigns(request: Request, h: ResponseToolkit): Promise<Resp
 async function listCampaigns(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     if ( !aData.campaigns || aData.campaigns.length == 0 ) {
         aData.refreshCampaigns();
+        aData.refreshOrganizations();
         await delay(1500);
     }
     

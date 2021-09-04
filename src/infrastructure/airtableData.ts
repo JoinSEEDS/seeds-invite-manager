@@ -18,7 +18,7 @@ function initBase(){
     }
 }
 
-export function refreshOrganizations(){
+export async function refreshOrganizations(){
     initBase();
 
     base('Organization').select({
@@ -71,7 +71,7 @@ function syncEntityData<T extends IIdentifiable>(entity:T, record:any, array:T[]
     console.log('Retrieved', record.get('Title'));
 }
 
-export function refreshCampaigns(){
+export async function refreshCampaigns(){
     initBase();
 
     base('Campaign').select({
@@ -84,30 +84,6 @@ export function refreshCampaigns(){
             var campaign = new Campaign();
 
             syncEntityData(campaign,record,campaigns);
-            // campaign.id = record.id;
-            // Object.assign(campaign, record.fields);
-
-            // Object.keys(campaign).forEach(function(key) {
-            //     var indexable = campaign as IIndexable;
-            //     // Copy the value
-            //     var val = indexable[key],
-            //       newKey = key.replace(/\s+/g, '');
-                
-            //     // Remove key-value from object
-            //     delete indexable[key];
-            
-            //     // Add value with new key
-            //     indexable[newKey] = val;
-            //   });
-
-            // var objIndex = campaigns.findIndex((obj => obj.id == campaign.id));
-            // if (objIndex < 0) {
-            //     campaigns.push(campaign);
-            // } else {
-            //     campaigns[objIndex] = campaign;
-            // }
-
-            // console.log('Retrieved', record.get('Title'));
         });
 
         // To fetch the next page of records, call `fetchNextPage`.
