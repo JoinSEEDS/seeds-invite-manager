@@ -11,7 +11,7 @@
                 <img src="{{PictureURL}}"  class="card-img-top mt-3" alt="{{Title}}" />
                 <div class="card-body">
                     <h5 class="card-title text-center">
-                        <a href="{{checkPrefix '/campaigns/info/'}}{{id}}" >
+                        <a href="{{checkPrefix '/campaigns/info/'}}{{ProposalID}}" >
                             {{Title}}
                         </a>
                     </h5>
@@ -31,12 +31,19 @@
                         </span>
                     </li>
                     <li class="list-group-item">
-                        
+                        <span title="Proposal ID">
+                            <strong>#</strong>{{ ProposalID }} 
+                        </span>
+
+                        <a href="{{checkPrefix "/campaigns?cycle="}}{{ ProposalCycle }}" title="Proposal Cycle">
+                            <i class="fa fa-sync-alt fa-sm"></i>{{ ProposalCycle }}
+                        </a>
                     </li>
                 </ul>
                 <div class="card-body">
-                    <a href="#" class="card-link">Card link</a>
-                    <a href="#" class="card-link">Another link</a>
+                    {{#if OrganizationAccount}}
+                    <a href="https://telos.bloks.io/account/{{OrganizationAccount}}" class="card-link" target="_blank">{{OrganizationAccount}}</a>
+                    {{/if}}
                 </div>
             </div>
         </div>

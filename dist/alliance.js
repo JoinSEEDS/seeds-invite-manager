@@ -61,7 +61,7 @@ function refreshFromAirtable() {
     var base = new airtable_1.default().base('appgpyECcHrR7yreI');
     base('Campaign').select({
         // Selecting the first 3 records in Grid view:
-        maxRecords: 30,
+        maxRecords: 200,
         view: "Grid view"
     }).eachPage(function page(records, fetchNextPage) {
         // This function (`page`) will get called for each page of records.
@@ -122,6 +122,9 @@ function listCampaigns(request, h) {
                     _a.label = 2;
                 case 2:
                     filtered = campaigns.filter(function (item) { return item.VotingStatus == "Passed"; });
+                    if (request.query.cycle) {
+                        filtered = filtered.filter(function (item) { return item.ProposalCycle == request.query.cycle; });
+                    }
                     return [2 /*return*/, h.view("campaigns", {
                             campaigns: filtered.sort(function (a, b) { return compare(a, b, "ProposalID"); }).reverse(),
                             sumSeeds: filtered.reduce(function (a, b) { return a + b.SeedsRequested; }, 0),
@@ -144,7 +147,7 @@ function campaignInfo(request, h) {
     return __awaiter(this, void 0, void 0, function () {
         var campaign;
         return __generator(this, function (_a) {
-            campaign = campaigns.find(function (el) { return el.id == request.params.id; });
+            campaign = campaigns.find(function (el) { return el.ProposalID == request.params.id; });
             if (campaign == null) {
                 return [2 /*return*/, h.response().code(404)];
             }

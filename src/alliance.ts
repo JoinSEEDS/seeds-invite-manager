@@ -21,7 +21,7 @@ function refreshFromAirtable(){
 
     base('Campaign').select({
         // Selecting the first 3 records in Grid view:
-        maxRecords: 30,
+        maxRecords: 200,
         view: "Grid view"
     }).eachPage(function page(records, fetchNextPage) {
         // This function (`page`) will get called for each page of records.
@@ -81,6 +81,10 @@ async function listCampaigns(request: Request, h: ResponseToolkit): Promise<Resp
     
     var filtered = campaigns.filter(item => item.VotingStatus == "Passed");
 
+    if(request.query.cycle) {
+        filtered = filtered.filter(item=>item.ProposalCycle == request.query.cycle);
+    }
+
     return h.view("campaigns",{ 
         campaigns: filtered.sort((a,b)=> compare(a,b,"ProposalID")).reverse(),
         sumSeeds: filtered.reduce((a, b) => a + b.SeedsRequested, 0),
@@ -99,7 +103,7 @@ function compare( a: any, b: any, fieldName: string ) {
 }
 
 async function campaignInfo(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
-    var campaign = campaigns.find( (el) => el.id == request.params.id );
+    var campaign = campaigns.find( (el) => el.ProposalID == request.params.id );
 
     if ( campaign == null ) {
         return h.response().code(404);
