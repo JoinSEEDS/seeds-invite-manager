@@ -95,6 +95,7 @@ async function registerVision(server: Server) {
       isCached: cached,
       layout: true,
       layoutPath: './../templates/layouts',
+      partialsPath: './../templates/partials',
       helpersPath: './htmlHelpers/',
     });
   }

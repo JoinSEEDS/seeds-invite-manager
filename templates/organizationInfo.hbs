@@ -5,7 +5,13 @@
         </div>
     </div>
     <div class="col">
+        <div class="float-end h3">
+            {{campaignsCount}} Campaigns ~ § {{formatNumber sumSeeds}}
+        </div>
         <h1>{{organization.Name}}</h1>
         <p>{{{compileMarkdown organization.Description}}}</p>
+
+        {{> campaignList}}
     </div>
 </div>
+

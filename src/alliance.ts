@@ -69,7 +69,14 @@ async function orgInfo(request: Request, h: ResponseToolkit): Promise<ResponseOb
         return h.response().code(404);
     }
 
-    return h.view("organizationInfo",{ organization });
+    var filtered = aData.campaigns.filter( item => item.VotingStatus == "Passed" && item.OrganizationAccount == request.params.id );
+
+    return h.view("organizationInfo", 
+    { organization, 
+        campaigns: filtered, 
+        sumSeeds: filtered.reduce((a, b) => a + b.SeedsRequested, 0),
+        campaignsCount: filtered.length 
+    });
 }
 
 export const campaignRoutes: ServerRoute[] = [
