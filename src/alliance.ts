@@ -29,7 +29,7 @@ async function listCampaigns(request: Request, h: ResponseToolkit): Promise<Resp
         await delay(1500);
     }
     
-    var filtered = aData.campaigns.filter(item => item.VotingStatus == "Passed");
+    var filtered = aData.campaigns.filter(item => item.VotingStatus != null );
 
     if(request.query.cycle) {
         filtered = filtered.filter(item=>item.ProposalCycle == request.query.cycle);
@@ -69,7 +69,7 @@ async function orgInfo(request: Request, h: ResponseToolkit): Promise<ResponseOb
         return h.response().code(404);
     }
 
-    var filtered = aData.campaigns.filter( item => item.VotingStatus == "Passed" && item.OrganizationAccount == request.params.id );
+    var filtered = aData.campaigns.filter( item => item.VotingStatus !=null && item.OrganizationAccount == request.params.id );
 
     return h.view("organizationInfo", 
     { organization, 
