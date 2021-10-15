@@ -9,7 +9,10 @@
     "test": "cross-env NODE_ENV=test mocha -r ts-node/register test/**/*.test.ts",
     "clean": "npx rimraf dist",
     "clean:node": "npx rimraf node_modules",
-    "dev": "npx tsc-watch --onSuccess \"nodemon\""
+    "dev": "npx tsc-watch --onSuccess \"nodemon\"",
+    "knex:migrate:make": "knex --knexfile src/database/knexfile.ts migrate:make -x ts",
+    "knex:migrate:latest": "knex --knexfile src/database/knexfile.ts migrate:latest",
+    "knex:migrate:rollback": "knex --knexfile src/database/knexfile.ts migrate:rollback"
   },
   "author": "apostolov87@gmail.com",
   "license": "ISC",
@@ -24,6 +27,7 @@
     "@types/hapi__hapi": "^20.0.9",
     "@types/hapi__inert": "^5.2.3",
     "@types/hapi__vision": "^5.5.3",
+    "@types/knex": "^0.16.1",
     "@types/markdown-it": "^12.0.3",
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.4.2",
@@ -53,6 +57,7 @@
     "@hapi/inert": "^6.0.3",
     "@hapi/vision": "^6.1.0",
     "@types/body-parser": "^1.19.1",
+    "@types/node-fetch": "^2.5.12",
     "airtable": "^0.11.1",
     "body-parser": "^1.19.0",
     "bootstrap": "^5.1.0",
@@ -61,6 +66,9 @@
     "handlebars-helpers": "^0.10.0",
     "helmet": "^4.6.0",
     "joi": "^17.4.2",
-    "markdown-it": "^12.2.0"
+    "knex": "^0.95.11",
+    "markdown-it": "^12.2.0",
+    "node-fetch": "^2.6.5",
+    "pg": "^8.7.1"
   }
 }

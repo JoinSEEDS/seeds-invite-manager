@@ -6,12 +6,15 @@ import { Request, Server } from "@hapi/hapi";
 import hapiVision from "@hapi/vision";
 import hapiInert from "@hapi/inert";
 
+import { accountRoutes } from "./account";
 import { helloRoutes } from "./hello";
 import { peopleRoutes } from "./people";
 import { campaignRoutes } from "./alliance";
 import Airtable from "airtable";
 import * as dotenv from "dotenv";
 import { prefix } from './infrastructure/routeManager';
+import Knex from 'knex';
+import knexConfig from './database/knexfile';
 
 dotenv.config({ path: '.env' });
 
@@ -50,6 +53,7 @@ export const init = async function(): Promise<Server> {
     });
 
 
+    server.route(setPrefix(accountRoutes));
     server.route(setPrefix(helloRoutes));
     server.route(setPrefix(peopleRoutes));
     server.route(setPrefix(campaignRoutes));
