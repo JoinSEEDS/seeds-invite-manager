@@ -29,7 +29,8 @@ function css() {
 function js() {
    return gulp.src([
        'node_modules/@popperjs/core/dist/cjs/popper.js',
-       'node_modules/bootstrap/dist/js/bootstrap.js'
+       'node_modules/bootstrap/dist/js/bootstrap.js',
+       'node_modules/jquery/dist/jquery.min.js'
     ])
       //.pipe(concat('scripts.min.js'))
       .pipe(uglify())

@@ -3,7 +3,7 @@ import Knex from 'knex';
 import knexConfig from './database/knexfile';
 import fetch from 'node-fetch';
 import { AuthToken } from "./models/AuthToken";
-import { newResponse, qrResponse } from './infrastructure/seedsAuthenticator';
+import { checkResponse, newResponse, qrResponse } from './infrastructure/seedsAuthenticator';
 
 
 async function login(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
@@ -34,6 +34,47 @@ async function login(request: Request, h: ResponseToolkit): Promise<ResponseObje
         qrUrl: qr.qr,
         esrUrl: qr.esr
     });
+}
+
+async function checkQr(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
+  const knex = Knex(knexConfig);
+  var authInfo = await knex<AuthToken>("AuthTokens").where( "Id", request.params.id ).first();
+
+  var url = process.env.AUTH_URL+'/api/v1/check/' + authInfo?.AuthId;
+  console.log(url);
+  const response = await fetch(url, { 
+      method: 'post', 
+      body: JSON.stringify({
+        token: authInfo?.Token
+      }), 
+      headers: {'Content-Type': 'application/json'} 
+  });
+
+
+  //console.log(await response.text());
+  const data = (await response.json() as checkResponse).message;
+  if ( response.ok ) {
+    return h.response("ok");
+  } else {
+    if (response.status==404) {
+      return h.response("refresh");
+    }
+    if (response.status==403) {
+      return h.response("pending");
+    }
+    throw new RangeError(response.status.toString());
+  }
+}
+
+async function loginWithAuth(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
+  const knex = Knex(knexConfig);
+  var authInfo = await knex.select<AuthToken>("AuthTokens").where( "id", request.params.id ).first();
+
+
+
+  request.cookieAuth.set({ Id: authInfo?.Id });
+
+  return h.redirect('/');
 }
 
 async function getQR( token: AuthToken ) : Promise<qrResponse> {
@@ -76,5 +117,15 @@ export const accountRoutes: ServerRoute[] = [
     method: "GET",
     path: "/login",
     handler: login
+  },
+  {
+    method: "GET",
+    path: "/checkQr/{id}",
+    handler: checkQr
+  },
+  {
+    method: "GET",
+    path: "/auth/{id}",
+    handler: loginWithAuth
   }
 ];

@@ -5,6 +5,7 @@ import Hapi, { ServerRoute } from "@hapi/hapi";
 import { Request, Server } from "@hapi/hapi";
 import hapiVision from "@hapi/vision";
 import hapiInert from "@hapi/inert";
+import hapiCookie from "@hapi/cookie";
 
 import { accountRoutes } from "./account";
 import { helloRoutes } from "./hello";
@@ -15,6 +16,7 @@ import * as dotenv from "dotenv";
 import { prefix } from './infrastructure/routeManager';
 import Knex from 'knex';
 import knexConfig from './database/knexfile';
+import { AuthToken } from "./models/AuthToken";
 
 dotenv.config({ path: '.env' });
 
@@ -33,9 +35,30 @@ export const init = async function(): Promise<Server> {
 
     await registerVision(server);
     await server.register(hapiInert);
+    await server.register(hapiCookie);
     // Routes will go here
+    server.auth.strategy('session', 'cookie', {
+        cookie: {
+            name: 'sid-example',
+            password: process.env.COOKIE_PASSWORD,
+            isSecure: false
+        },
+        redirectTo: '/login',
+        validateFunc: async (request, session: any) => {
+            const knex = Knex(knexConfig);
+            var authInfo = await knex.select<AuthToken>("AuthTokens").where( "id", session.id ).first();
+            
+            if (!authInfo?.IsSigned) {
 
+                return { valid: false };
+            }
 
+            return { valid: true, credentials: { Id: authInfo?.Id } };
+        }
+    });
+
+    server.auth.default('session');
+    
     server.route({  
       method: 'GET',
       path: prefix('/assets/{file*}'),
@@ -43,17 +66,23 @@ export const init = async function(): Promise<Server> {
         directory: { 
           path: 'assets'
         }
+      },
+      options: {
+        auth: false
       }
     });
-
+    
     server.route({
         method: "GET",
         path: prefix("/"),
         handler: index
     });
 
-
-    server.route(setPrefix(accountRoutes));
+    var accR = setPrefix(accountRoutes);
+    accR.forEach(route => {
+      route.options = { auth: false };
+    });
+    server.route(accR);
     server.route(setPrefix(helloRoutes));
     server.route(setPrefix(peopleRoutes));
     server.route(setPrefix(campaignRoutes));

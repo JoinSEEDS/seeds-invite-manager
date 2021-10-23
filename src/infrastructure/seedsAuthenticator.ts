@@ -23,6 +23,11 @@ class newMessage{
     public token: string = ''
     public valid_until: number = 0
 }
+
+export class checkResponse {
+    public message: string | null = null
+}
+
 export  {
     newToken,
 

@@ -3,4 +3,14 @@
 
     <h2>Auth Token Id: {{authTokenId}}</h2>
     <img src="{{qrUrl}}" style="height: 400px;" />
+
+    
 </div>
+
+{{#section 'script'}}
+
+<script type="application/javascript">
+    initloginPage({ id:'{{authTokenId}}' });
+</script>
+
+{{/section}}
