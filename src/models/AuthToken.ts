@@ -1,5 +1,5 @@
 export class AuthToken {
-    public Id: number|null = null
+    public Id?: number|null
     public AuthId: string|null = ''
     public Policy: string = ''
     public Signature: string = ''

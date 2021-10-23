@@ -7,6 +7,11 @@ async function newToken(){
     return data;
 }
 
+export class qrResponse {
+    public esr?:string
+    public qr?:string
+}
+
 export class newResponse {
     public message: newMessage | null = null
 }
