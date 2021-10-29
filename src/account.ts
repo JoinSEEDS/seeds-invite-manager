@@ -97,9 +97,9 @@ async function getQR( token: AuthToken ) : Promise<qrResponse> {
           ],
           data: {
             account: '............1',
-            device_id: token.Token,
+            device_id: token.AuthId,
             signature: token.Signature,
-            backend_user_id: token.Token,
+            backend_user_id: token.AuthId,
             policy: token.Policy
           }
         }
