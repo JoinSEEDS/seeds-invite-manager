@@ -81,8 +81,8 @@ async function auth(request: Request, h: ResponseToolkit): Promise<ResponseObjec
   if ( response.ok ) {
     authInfo.IsSigned = true;
     await knex("AuthTokens").where({Id:authInfo.Id}).update({IsSigned:true});
-    var authId = authInfo?.Id?.toString();
-    request.cookieAuth.set({ Id: authId });
+
+    request.cookieAuth.set({ id: authInfo?.Id, Id: authInfo?.Id });
   }
   
   return h.redirect('/');
@@ -92,6 +92,11 @@ async function authTest(request: Request, h: ResponseToolkit): Promise<ResponseO
   request.cookieAuth.set({ Id: "33" })
   
   return h.redirect('/');
+}
+
+async function authInfo(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
+  
+  return h.response(request.auth.credentials);
 }
 
 async function getQR( token: AuthToken ) : Promise<qrResponse> {
@@ -151,6 +156,12 @@ export const accountRoutes: ServerRoute[] = [
     handler: authTest
   },
   {
+    method: "GET",
+    path: "/authInfo",
+    handler: authInfo
+  },
+  
+    {
     method: 'GET',
     path: '/logout',
     handler: (request, h) => {

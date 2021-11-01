@@ -38,7 +38,7 @@ export const init = async function(): Promise<Server> {
     // Routes will go here
     server.auth.strategy('session', 'cookie', {
         cookie: {
-            name: 'sid-example',
+            name: 'seeds-invites',
             password: process.env.COOKIE_PASSWORD,
             isSecure: false
         },
@@ -51,7 +51,7 @@ export const init = async function(): Promise<Server> {
                 return { valid: false };
             }
 
-            return { valid: true, credentials: { Id: authInfo?.Id } };
+            return { valid: true, credentials: authInfo };
         }
     });
 
@@ -78,7 +78,7 @@ export const init = async function(): Promise<Server> {
 
     var accR = setPrefix(accountRoutes);
     accR.forEach(route => {
-      route.options = { auth: false };
+      route.options = { auth: { mode: 'try' } };
     });
     server.route(accR);
     server.route(setPrefix(helloRoutes));
