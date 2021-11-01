@@ -14,8 +14,7 @@ import { campaignRoutes } from "./alliance";
 import Airtable from "airtable";
 import * as dotenv from "dotenv";
 import { prefix } from './infrastructure/routeManager';
-import Knex from 'knex';
-import knexConfig from './database/knexfile';
+import { knex } from './infrastructure/knex';
 import { AuthToken } from "./models/AuthToken";
 
 dotenv.config({ path: '.env' });
@@ -45,8 +44,7 @@ export const init = async function(): Promise<Server> {
         },
         redirectTo: '/login',
         validateFunc: async (request, session: any) => {
-            const knex = Knex(knexConfig);
-            var authInfo = await knex.select<AuthToken>("AuthTokens").where( "id", session.id ).first();
+            var authInfo = await knex<AuthToken>("AuthTokens").where( "Id", session.Id ).first();
             
             if (!authInfo?.IsSigned) {
 

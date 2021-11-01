@@ -7,7 +7,15 @@ function initloginPage(info){
             .done(function(data) {
                 if (data=="ok") {
                     //window.location.href="/auth/"+info.id
-                    alert("authenticated!");
+                    $.post('/auth', { id:info.id })
+                    .done(function(response){
+                        if(response.redirect){
+                            window.location.href = response.redirect|'/';
+                        } else {
+                            window.location.href = '/';
+                        }
+                    });
+                    //alert("authenticated!");
                     shouldcContinue = false;
                 }
                 if (data=="refresh") {
@@ -18,7 +26,7 @@ function initloginPage(info){
                 if (shouldcContinue) { checkServer();}
             });
             
-        },1000);
+        }, 1000);
     }
     checkServer();
 
