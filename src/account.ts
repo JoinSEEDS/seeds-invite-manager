@@ -26,13 +26,11 @@ async function login(request: Request, h: ResponseToolkit): Promise<ResponseObje
   
   // delete authToken.Id;
   // authToken.Id = (await knex("AuthTokens").insert(authToken, "Id"))[0];
-  var session = documentStore.openSession();
-  await session.store(authToken);
+  var ravenSession = request.server.plugins.ravendb.session;
+  await ravenSession.store(authToken);
   
   console.log(authToken.Id);
   var qr = await getQR(authToken);
-  
-  await session.saveChanges();
   
   return h.view("login",{ 
         authTokenId: authToken.Id,
@@ -43,8 +41,8 @@ async function login(request: Request, h: ResponseToolkit): Promise<ResponseObje
 }
 
 async function checkQr(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
-  var session = documentStore.openSession();
-  var authInfo = await session.load<AuthToken>(request.params.id);
+  var ravenSession = request.server.plugins.ravendb.session;
+  var authInfo = await ravenSession.load<AuthToken>(request.params.id);
 
   // var authInfo = await knex<AuthToken>("AuthTokens").where( "Id", request.params.id ).first();
 
@@ -82,8 +80,8 @@ async function checkAuth(authToken:AuthToken|undefined): Promise<FetchResponse> 
 async function auth(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
   const input = <IIdentifiable>request.payload;
   //var authInfo = await knex<AuthToken>("AuthTokens").where( "Id", input.id ).first();
-  var session = documentStore.openSession();
-  var authInfo = await session.load<AuthToken>(input.id||'');
+  var ravenSession = request.server.plugins.ravendb.session;
+  var authInfo = await ravenSession.load<AuthToken>(input.id||'');
   authInfo = authInfo ?? new AuthToken();
   if ( authInfo.IsSigned == true ) {
     throw Boom.unauthorized("token already used for authentication");    
@@ -95,7 +93,7 @@ async function auth(request: Request, h: ResponseToolkit): Promise<ResponseObjec
 
     request.cookieAuth.set({ id: authInfo?.Id, Id: authInfo?.Id });
   }
-  session.saveChanges();
+  ravenSession.saveChanges();
   return h.redirect('/');
 }
 
