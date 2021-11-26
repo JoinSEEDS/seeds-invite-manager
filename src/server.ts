@@ -56,7 +56,7 @@ export const init = async function(): Promise<Server> {
               
               return { valid: false };
             }
-            console.log("auth with id: "+authInfo.Id);
+            //console.log("auth with id: "+authInfo.Id);
 
             return { valid: true, credentials: authInfo };
         }

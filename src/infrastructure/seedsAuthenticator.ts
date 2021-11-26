@@ -28,6 +28,19 @@ export class checkResponse {
     public message: string | null = null
 }
 
+export class infoResponse {
+    public account: string = ''
+    public image: string = ''
+    public nickname: string = ''
+    public reputation: number = 0
+    public roles: string = ''
+    public skills: string = ''
+    public status: string = ''
+    public story: string = ''
+    public timestamp: number = 0
+    public type: string = ''
+}
+
 export  {
     newToken,
 

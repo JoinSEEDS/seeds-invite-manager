@@ -8,6 +8,10 @@ export class AuthToken {
     public DateValidUntil: Date | null = null
     public IsSigned: boolean = false
     public Json: object | null = {}
+    public AccountInfo: object | null = {}
+    public SeedsName: string = ''
+    public Nickname: string = ''
+    public ProfilePicture: string = ''
 
     public constructor(init?:Partial<AuthToken>) {
         Object.assign(this, init);

@@ -3,7 +3,7 @@ import { knex } from './infrastructure/knex';
 import fetch from 'node-fetch'; 
 import { Response as FetchResponse } from 'node-fetch'
 import { AuthToken } from "./models/AuthToken";
-import { checkResponse, newResponse, qrResponse } from './infrastructure/seedsAuthenticator';
+import { checkResponse, infoResponse, newResponse, qrResponse } from './infrastructure/seedsAuthenticator';
 import { IIdentifiable } from "./models/IIdentifiable";
 import Boom from '@hapi/boom'
 import { documentStore } from "./database/ravenDb"
@@ -77,6 +77,22 @@ async function checkAuth(authToken:AuthToken|undefined): Promise<FetchResponse> 
   return response;
 }
 
+async function getAccountInfo(authToken:AuthToken|undefined): Promise<infoResponse> {
+  var url = process.env.AUTH_URL+'/api/v1/info/' + authToken?.AuthId;
+  console.log(url);
+  const response = await fetch(url, { 
+      method: 'post', 
+      body: JSON.stringify({
+        token: authToken?.Token
+      }), 
+      headers: {'Content-Type': 'application/json'} 
+  });
+
+  //console.log(await response.text());
+  const data = (await response.json() as infoResponse);
+  return data;
+}
+
 async function auth(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
   const input = <IIdentifiable>request.payload;
   //var authInfo = await knex<AuthToken>("AuthTokens").where( "Id", input.id ).first();
@@ -90,7 +106,12 @@ async function auth(request: Request, h: ResponseToolkit): Promise<ResponseObjec
   if ( response.ok ) {
     authInfo.IsSigned = true;
     //await knex("AuthTokens").where({Id:authInfo.Id}).update({IsSigned:true});
-
+    var info = await getAccountInfo(authInfo);
+    authInfo.AccountInfo = info;
+    authInfo.SeedsName = info.account;
+    authInfo.Nickname = info.nickname;
+    authInfo.ProfilePicture = info.image;
+     
     request.cookieAuth.set({ id: authInfo?.Id, Id: authInfo?.Id });
   }
   ravenSession.saveChanges();
