@@ -9,6 +9,9 @@ export default {
 
         server.ext('onPreAuth', function(request, h){
             //console.log('inside onPreAuth');
+            if (request.path.startsWith('/assets')) {
+                return h.continue;
+            }
             server.expose("session", documentStore.openSession());
             return h.continue;
         });
@@ -21,8 +24,11 @@ export default {
 
         server.ext('onPostHandler', async function(request, h){
             //console.log('inside onPostHandler');
+            if (request.path.startsWith('/assets')) {
+                return h.continue;
+            }
             var ravenSession = request.server.plugins.ravendb.session;
-            if(ravenSession.advanced.hasChanges()){
+            if ( ravenSession.advanced.hasChanges() ){
                 await ravenSession.saveChanges();
             }
             ravenSession.dispose();

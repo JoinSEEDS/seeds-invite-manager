@@ -108,10 +108,10 @@ async function auth(request: Request, h: ResponseToolkit): Promise<ResponseObjec
     //await knex("AuthTokens").where({Id:authInfo.Id}).update({IsSigned:true});
     var info = await getAccountInfo(authInfo);
     authInfo.AccountInfo = info;
-    authInfo.SeedsName = info.account;
+    authInfo.SeedsAccount = info.account;
     authInfo.Nickname = info.nickname;
     authInfo.ProfilePicture = info.image;
-     
+
     request.cookieAuth.set({ id: authInfo?.Id, Id: authInfo?.Id });
   }
   ravenSession.saveChanges();

@@ -9,7 +9,7 @@ export class AuthToken {
     public IsSigned: boolean = false
     public Json: object | null = {}
     public AccountInfo: object | null = {}
-    public SeedsName: string = ''
+    public SeedsAccount: string = ''
     public Nickname: string = ''
     public ProfilePicture: string = ''
 

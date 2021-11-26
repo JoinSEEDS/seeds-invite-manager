@@ -1,0 +1,33 @@
+<div class="row">
+    <div class="col">
+        <a class="btn btn-success" href="{{checkPrefix "/events/edit"}}">
+        <i class="fa fa-plus"></i>
+        New Event
+        </a>
+
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>Invites</th>
+                    <th>Sent</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each events}}
+                <tr>
+                    <td>
+                        <a href="{{checkPrefix "/events/edit/"}}{{Id}}">{{Name}}</a>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+
