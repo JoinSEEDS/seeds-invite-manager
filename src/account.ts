@@ -6,6 +6,7 @@ import { AuthToken } from "./models/AuthToken";
 import { checkResponse, newResponse, qrResponse } from './infrastructure/seedsAuthenticator';
 import { IIdentifiable } from "./models/IIdentifiable";
 import Boom from '@hapi/boom'
+import { documentStore } from "./database/ravenDb"
 
 
 async function login(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
@@ -23,11 +24,16 @@ async function login(request: Request, h: ResponseToolkit): Promise<ResponseObje
       Json: data
     });
   
-  delete authToken.Id;
-  authToken.Id = (await knex("AuthTokens").insert(authToken, "Id"))[0];
+  // delete authToken.Id;
+  // authToken.Id = (await knex("AuthTokens").insert(authToken, "Id"))[0];
+  var session = documentStore.openSession();
+  await session.store(authToken);
+  
   console.log(authToken.Id);
   var qr = await getQR(authToken);
-
+  
+  await session.saveChanges();
+  
   return h.view("login",{ 
         authTokenId: authToken.Id,
         returnId: authToken.Id,
@@ -37,7 +43,10 @@ async function login(request: Request, h: ResponseToolkit): Promise<ResponseObje
 }
 
 async function checkQr(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
-  var authInfo = await knex<AuthToken>("AuthTokens").where( "Id", request.params.id ).first();
+  var session = documentStore.openSession();
+  var authInfo = await session.load<AuthToken>(request.params.id);
+
+  // var authInfo = await knex<AuthToken>("AuthTokens").where( "Id", request.params.id ).first();
 
   var response = await checkAuth(authInfo);
 
@@ -72,7 +81,9 @@ async function checkAuth(authToken:AuthToken|undefined): Promise<FetchResponse> 
 
 async function auth(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
   const input = <IIdentifiable>request.payload;
-  var authInfo = await knex<AuthToken>("AuthTokens").where( "Id", input.id ).first();
+  //var authInfo = await knex<AuthToken>("AuthTokens").where( "Id", input.id ).first();
+  var session = documentStore.openSession();
+  var authInfo = await session.load<AuthToken>(input.id||'');
   authInfo = authInfo ?? new AuthToken();
   if ( authInfo.IsSigned == true ) {
     throw Boom.unauthorized("token already used for authentication");    
@@ -80,11 +91,11 @@ async function auth(request: Request, h: ResponseToolkit): Promise<ResponseObjec
   var response = await checkAuth(authInfo);
   if ( response.ok ) {
     authInfo.IsSigned = true;
-    await knex("AuthTokens").where({Id:authInfo.Id}).update({IsSigned:true});
+    //await knex("AuthTokens").where({Id:authInfo.Id}).update({IsSigned:true});
 
     request.cookieAuth.set({ id: authInfo?.Id, Id: authInfo?.Id });
   }
-  
+  session.saveChanges();
   return h.redirect('/');
 }
 
@@ -169,6 +180,5 @@ export const accountRoutes: ServerRoute[] = [
         request.cookieAuth.clear();
         return h.redirect('/');
     }
-
 }
 ];

@@ -16,6 +16,7 @@ import * as dotenv from "dotenv";
 import { prefix } from './infrastructure/routeManager';
 import { knex } from './infrastructure/knex';
 import { AuthToken } from "./models/AuthToken";
+import { documentStore } from "./database/ravenDb"
 
 dotenv.config({ path: '.env' });
 
@@ -44,7 +45,9 @@ export const init = async function(): Promise<Server> {
         },
         redirectTo: '/login',
         validateFunc: async (request, session: any) => {
-            var authInfo = await knex<AuthToken>("AuthTokens").where( "Id", session.Id ).first();
+            //var authInfo = await knex<AuthToken>("AuthTokens").where( "Id", session.Id ).first();
+            var rSession = documentStore.openSession();
+            var authInfo = await rSession.load<AuthToken>(session.id);
             
             if (!authInfo?.IsSigned) {
 
@@ -84,6 +87,17 @@ export const init = async function(): Promise<Server> {
     server.route(setPrefix(helloRoutes));
     server.route(setPrefix(peopleRoutes));
     server.route(setPrefix(campaignRoutes));
+
+    // server.ext('onPreHandler', function(request, h){
+    //   console.log('inside onPreHandler');
+    //   return h.continue;
+    // });
+
+    // server.ext('onPostHandler', function(request, h){
+    //     console.log('inside onPostHandler');
+    //     return h.continue;
+    // });
+
 
     return server;
 };
