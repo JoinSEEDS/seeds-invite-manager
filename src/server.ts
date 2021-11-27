@@ -1,7 +1,7 @@
 
 'use strict';
 
-import Hapi, { ServerRoute } from "@hapi/hapi";
+import Hapi, { ResponseObject, ResponseToolkit, ServerRoute } from "@hapi/hapi";
 import { Request, Server } from "@hapi/hapi";
 import hapiVision from "@hapi/vision";
 import hapiInert from "@hapi/inert";
@@ -149,7 +149,8 @@ process.on('unhandledRejection', (err) => {
     process.exit(1);
 });
 
-function index(request: Request): string {
+async function index(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     console.log("Processing request", request.info.id);
-    return "Hello! Random act of kindness.";
+    return h.redirect('/events');
+    //return "Hello! Random act of kindness.";
 }

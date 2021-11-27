@@ -10,7 +10,7 @@
     <link href="{{checkPrefix "/assets/lib/styles.css"}}" rel="stylesheet" />
   </head>
   <body>
-
+{{#unless hideMenu}}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container">
     <a class="navbar-brand h1" href="{{checkPrefix "/events"}}">SEEDS Invites</a>
@@ -34,6 +34,7 @@
     </div>
   </div>
 </nav>
+{{/unless}}
 
     <div class="container">
       {{{content}}}

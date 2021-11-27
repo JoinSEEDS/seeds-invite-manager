@@ -10,6 +10,10 @@ import { documentStore } from "./database/ravenDb"
 
 
 async function login(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
+  if(request.auth.isAuthenticated == true){
+    return h.redirect('/');
+  }
+
   console.log(process.env.AUTH_URL+'/api/v1/new');
   const response = await fetch(process.env.AUTH_URL+'/api/v1/new', { method: 'post', body:JSON.stringify({}), headers: {'Content-Type': 'application/json'} });
   //console.log(await response.text());
@@ -36,7 +40,8 @@ async function login(request: Request, h: ResponseToolkit): Promise<ResponseObje
         authTokenId: authToken.Id,
         returnId: authToken.Id,
         qrUrl: qr.qr,
-        esrUrl: qr.esr
+        esrUrl: qr.esr,
+        hideMenu: true
     });
 }
 
