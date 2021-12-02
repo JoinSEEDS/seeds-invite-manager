@@ -13,17 +13,23 @@
                     <th>Date</th>
                     <th>Invites</th>
                     <th>Sent</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 {{#each events}}
                 <tr>
                     <td>
-                        <a href="{{checkPrefix "/events/edit/"}}{{Id}}">{{Name}}</a>
+                        <a href="{{checkPrefix "/events/view/"}}{{Id}}">{{Name}}</a>
                     </td>
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td>
+                        <a class="btn btn-outline-secondary" href="{{checkPrefix "/events/edit/"}}{{Id}}">
+                        <i class="fa fa-pen"></i>
+                        </a>
+                    </td>
                 </tr>
                 {{/each}}
             </tbody>

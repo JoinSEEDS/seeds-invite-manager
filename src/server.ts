@@ -9,7 +9,8 @@ import hapiCookie from "@hapi/cookie";
 
 import { accountRoutes } from "./account";
 import { helloRoutes } from "./hello";
-import { inviteRoutes } from "./invites";
+import { inviteRoutes } from "./invite";
+import { inviteLinkRoutes } from "./inviteLink";
 import { peopleRoutes } from "./people";
 import { campaignRoutes } from "./alliance";
 import Airtable from "airtable";
@@ -91,6 +92,7 @@ export const init = async function(): Promise<Server> {
     server.route(accR);
     server.route(setPrefix(helloRoutes));
     server.route(setPrefix(inviteRoutes));
+    server.route(setPrefix(inviteLinkRoutes));
     server.route(setPrefix(peopleRoutes));
     server.route(setPrefix(campaignRoutes));
 
