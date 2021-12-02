@@ -1,10 +1,15 @@
 <div class="row">
     <div class="col-4">
         <h1>{{event.Name}}</h1>
-        <a href="{{baseUrl}}/i/{{event.Slug}}">{{baseUrl}}/i/{{event.Slug}}</a>
-        <a class="btn btn-outline-secondary btn-sm">
-            <i class="fa fa-copy"></i>
-        </a>
+        <div class="d-flex justify-content-center">
+            <img src="{{qrCode}}" alt="{{event.Name}} QR Code" width="200"  />
+        </div>
+        <div class="d-flex justify-content-center">
+            <a href="{{baseUrl}}/i/{{event.Slug}}">{{baseUrl}}/i/{{event.Slug}}</a>
+            <a class="btn btn-link btn-sm">
+                <i class="fa fa-copy"></i>
+            </a>
+        </div>
     </div>
     <div class="col-8">
     <h2 class="h3">Invites</h2>

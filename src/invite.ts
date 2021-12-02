@@ -1,6 +1,7 @@
 import { Request, ResponseToolkit, ResponseObject, ServerRoute } from "@hapi/hapi";
 import { InviteEvent } from "./models/InviteEvent";
 import {v4 as uuidv4} from 'uuid';
+import QRCode from 'qrcode'
 
 async function eventsList(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     var ravenSession = request.server.plugins.ravendb.session;
@@ -46,10 +47,14 @@ async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> 
   var ravenSession = request.server.plugins.ravendb.session;
   var event = await ravenSession.load<InviteEvent>(id);
 
+  var baseUrl = `${request.headers['x-forwarded-proto'] || request.server.info.protocol}://${request.headers['x-forwarded-host'] || request.info.host}`;
+  var eventUrl = `${baseUrl}/i/${event.Slug}`;
+  var qrCode = await QRCode.toDataURL(eventUrl);
 
   return h.view("view", {
     event:event,
-    baseUrl: `${request.headers['x-forwarded-proto'] || request.server.info.protocol}://${request.headers['x-forwarded-host'] || request.info.host}`
+    baseUrl: baseUrl,
+    qrCode: qrCode
   });
 }
 
