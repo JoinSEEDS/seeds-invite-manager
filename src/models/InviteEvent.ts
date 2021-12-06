@@ -4,7 +4,7 @@ export class InviteEvent {
     public Date: Date | null = null
     public Slug: string|null = ''
     public App:InviteApp = InviteApp.Wallet
-    public AccountId: string|null = ''
+    public AccountId: string = ''
     public Status:InviteEventStatus = InviteEventStatus.Inactive
 
 

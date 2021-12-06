@@ -1,0 +1,23 @@
+<div class="row justify-content-center">
+    <form action="/events/import/{{event.Id}}" method="post" class="col-4 mt-3">
+        <h1 class="h2">Import invites for {{event.Name}}
+        <a href="#" class="btn btn-link btn-sm">
+            <i class="fa fa-info" ></i>
+        </a>
+        </h1>
+        <p>
+            In order to create multiple invites, please go to the SEEDS Passport app under "Manage Your Invites" menu item
+            > "Campaings". Once you create a campaign with the desired parameters, plese click 'export' and paste the resulting list of 
+            invite URLs in the texbox below.
+        </p>
+        <input type="hidden" id="InviteEventId" name="InviteEventId" value="{{event.Id}}"  />
+            <div class="form-floating mb-2">
+                <textarea class="form-control" name="ImportText" id="ImportText" style="height: 250px"></textarea>
+                <label for="Name">Import Links</label>
+            </div>
+            
+            <button type="submit" class="btn btn-success">
+                Import
+            </button>
+    </form>
+</div>
