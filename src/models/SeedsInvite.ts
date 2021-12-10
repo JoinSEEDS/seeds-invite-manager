@@ -5,14 +5,15 @@ export class SeedsInvite {
 
     public Status: InviteStatus = InviteStatus.Available
     public Secret: string = ''
+    public SentOn: Date|null = null
     
     public constructor(init?:Partial<SeedsInvite>) {
         Object.assign(this, init);
     }
 }
 
-enum InviteStatus{
-    Available,
-    Send,
-    Redeemed
+export enum InviteStatus {
+    Available = "Available",
+    Sent = "Sent",
+    Redeemed = "Redeemed"
 }

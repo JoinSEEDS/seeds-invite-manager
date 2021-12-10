@@ -18,7 +18,7 @@ enum InviteApp {
     Passport
 }
 
-enum InviteEventStatus{
+export enum InviteEventStatus{
     Inactive,
     Active
 }

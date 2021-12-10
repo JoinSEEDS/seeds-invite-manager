@@ -3,7 +3,8 @@ import { InviteEvent } from "./models/InviteEvent";
 import {v4 as uuidv4} from 'uuid';
 import QRCode from 'qrcode'
 import { InviteImport } from "./models/InviteImport";
-import { SeedsInvite } from "./models/SeedsInvite";
+import { InviteStatus, SeedsInvite } from "./models/SeedsInvite";
+import { OrderingType } from 'ravendb';
 
 async function eventsList(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     var ravenSession = request.server.plugins.ravendb.session;
@@ -90,8 +91,10 @@ async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> 
   var eventUrl = `${baseUrl}/i/${event.Slug}`;
   var qrCode = await QRCode.toDataURL(eventUrl);
 
-  var invites = await ravenSession.query<SeedsInvite>("SeedsInvites")
+  var invites = await ravenSession.query<SeedsInvite>({indexName:"SeedsInvites/All"})
                                   .whereEquals("EventId", event.Id)
+                                  .orderBy("StatusForSort")
+                                  .orderByDescending("SentOn")
                                   .all();
 
   return h.view("view", {

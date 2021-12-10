@@ -5,8 +5,8 @@
             <img src="{{qrCode}}" alt="{{event.Name}} QR Code" width="200"  />
         </div>
         <div class="d-flex justify-content-center">
-            <a href="{{baseUrl}}/i/{{event.Slug}}">{{baseUrl}}/i/{{event.Slug}}</a>
-            <a class="btn btn-link btn-sm">
+            <a href="{{baseUrl}}/i/{{event.Slug}}" id="linkUrl" target="_blank">{{baseUrl}}/i/{{event.Slug}}</a>
+            <a class="btn btn-link btn-sm" id="copyBtn">
                 <i class="fa fa-copy"></i>
             </a>
         </div>
@@ -34,8 +34,11 @@
                 <td>{{Secret}}</td>
                 <td>
                     <div class="badge bg-secondary">
-                        Available
+                        {{Status}}
                     </div>
+                </td>
+                <td>
+                    {{SentOn}}
                 </td>
             </tr>
             {{/each}}
@@ -44,3 +47,26 @@
 
     </div>
 </div>
+
+
+{{#section 'script'}}
+
+<script type="application/javascript">
+    function initCopy() {
+        var $copyBtn = $("#copyBtn");
+        $copyBtn.on( "click", function(){
+            var url = document.getElementById("linkUrl");
+            
+            navigator.clipboard.writeText(url.getAttribute("href"));
+
+            $copyBtn.find('i').removeClass("fa-copy").addClass("fa-check");
+            setTimeout(function(){
+                $copyBtn.find('i').removeClass("fa-check").addClass("fa-copy");
+            }, 500);
+        });
+    }
+    initCopy();
+    
+</script>
+
+{{/section}}

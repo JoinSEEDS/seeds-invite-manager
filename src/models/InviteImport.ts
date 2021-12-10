@@ -1,5 +1,3 @@
-import { string } from "joi"
-
 export class InviteImport {
     public Id?: string|null
     public EventId:string|null = ''
