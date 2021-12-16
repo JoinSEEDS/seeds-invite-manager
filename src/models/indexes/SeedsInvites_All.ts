@@ -2,7 +2,7 @@ import { number } from "joi";
 import { AbstractJavaScriptIndexCreationTask } from "ravendb";
 import { InviteStatus, SeedsInvite } from "../SeedsInvite";
 
-export class SeedsInvites_All extends AbstractJavaScriptIndexCreationTask<SeedsInvite, { EventId: string, SentOn: Date, Status: InviteStatus, StatusForSort: number }> {
+export class SeedsInvites_All extends AbstractJavaScriptIndexCreationTask<SeedsInvite, { EventId: string, SentOn: Date, Status: string, StatusForSort: number }> {
     public constructor() {
         super();
 
@@ -11,13 +11,13 @@ export class SeedsInvites_All extends AbstractJavaScriptIndexCreationTask<SeedsI
         this.map(SeedsInvite, se => {
             var sortStatus = 0;
             switch(se.Status)   {
-                case InviteStatus.Available:
+                case "Available":
                     sortStatus = 0;
                     break;
-                case InviteStatus.Sent:
+                case "Sent":
                     sortStatus = 1;
                     break;
-                case InviteStatus.Redeemed:
+                case "Redeemed":
                     sortStatus = 2;
                     break;
                 default:

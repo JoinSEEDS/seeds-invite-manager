@@ -1,6 +1,6 @@
 <div class="row mt-3">
     <div class="col-4">
-        <h1>{{event.Name}}</h1>
+        <h1 class='text-center'>{{event.Name}}</h1>
         <div class="d-flex justify-content-center">
             <img src="{{qrCode}}" alt="{{event.Name}} QR Code" width="200"  />
         </div>
@@ -31,14 +31,18 @@
         <tbody>
             {{#each invites}}
             <tr>
-                <td>{{Secret}}</td>
+                <td title="">{{showPartly Secret}}</td>
                 <td>
-                    <div class="badge bg-secondary">
+                    <div class="badge bg-{{inviteStatusColor Status}}">
                         {{Status}}
                     </div>
                 </td>
                 <td>
-                    {{SentOn}}
+                    {{#if (isRedeemed Status)}}
+                        <a href="https://telos.bloks.io/account/{{RedeemedAccount}}" target="_blank">{{RedeemedAccount}}</a>
+                    {{else}}
+                        {{formatDate SentOn}}
+                    {{/if}}
                 </td>
             </tr>
             {{/each}}

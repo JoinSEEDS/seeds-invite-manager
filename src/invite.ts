@@ -1,11 +1,12 @@
-import { Request, ResponseToolkit, ResponseObject, ServerRoute } from "@hapi/hapi";
-import { InviteEvent } from "./models/InviteEvent";
-import {v4 as uuidv4} from 'uuid';
+import { Request, ResponseToolkit, ResponseObject, ServerRoute } from "@hapi/hapi"
+import { InviteEvent } from "./models/InviteEvent"
+import {v4 as uuidv4} from 'uuid'
 import QRCode from 'qrcode'
-import { InviteImport } from "./models/InviteImport";
-import { InviteStatus, SeedsInvite } from "./models/SeedsInvite";
-import { OrderingType } from 'ravendb';
-import { SeedsInvites_All } from "./models/indexes/SeedsInvites_All";
+import { InviteImport } from "./models/InviteImport"
+import { InviteStatus, SeedsInvite } from "./models/SeedsInvite"
+import { OrderingType } from 'ravendb'
+import { SeedsInvites_All } from "./models/indexes/SeedsInvites_All"
+import { GetHashFromSecret, GetInvitesForAccount } from "./infrastructure/telosClient"
 
 async function eventsList(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     var ravenSession = request.server.plugins.ravendb.session;
@@ -72,6 +73,7 @@ async function importSave(request: Request, h: ResponseToolkit): Promise<Respons
     invite.EventId = event.Id;
     invite.AccountId = event.AccountId;
     invite.Secret = secret;
+    invite.Hash = GetHashFromSecret(secret);
 
     await ravenSession.store(invite);
 
@@ -97,6 +99,21 @@ async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> 
                                   .orderBy("StatusForSort")
                                   .orderByDescending("SentOn")
                                   .all();
+  
+  var seedsInvitesInfo = await GetInvitesForAccount(<string>request.auth.credentials.SeedsAccount);
+
+  for ( var i=0; i< invites.length; i++ ) {
+    var localInvite = invites[i];
+    var blochainInvite = seedsInvitesInfo.find(invite=>invite.invite_hash == localInvite.Hash);
+    if(blochainInvite){
+      localInvite.SowQuantityString = blochainInvite.sow_quantity;
+      localInvite.TransferQuantityString = blochainInvite.transfer_quantity;
+      if(blochainInvite.account && blochainInvite.account != ''){
+        localInvite.Status = InviteStatus.Redeemed;
+        localInvite.RedeemedAccount = blochainInvite.account;
+      }
+    }
+  }
 
   return h.view("view", {
     event:event,

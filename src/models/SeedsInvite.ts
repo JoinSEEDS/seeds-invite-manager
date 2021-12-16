@@ -6,6 +6,10 @@ export class SeedsInvite {
     public Status: InviteStatus = InviteStatus.Available
     public Secret: string = ''
     public SentOn: Date|null = null
+    public Hash: string = ''
+    public RedeemedAccount: string
+    public SowQuantityString: string
+    public TransferQuantityString: string
     
     public constructor(init?:Partial<SeedsInvite>) {
         Object.assign(this, init);
