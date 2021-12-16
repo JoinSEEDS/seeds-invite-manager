@@ -3,11 +3,11 @@ import { InviteStatus } from '../models/SeedsInvite';
 
 export function inviteStatusColor(obj: InviteStatus) {
     switch(obj){
-        case InviteStatus.Available:
+        case InviteStatus.Redeemed:
             return "success";
         case InviteStatus.Sent:
             return "info";
         default:
-            return "secondary";
+            return "light text-dark";
     }
 };
