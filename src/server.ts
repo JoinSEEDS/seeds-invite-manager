@@ -12,8 +12,6 @@ import { helloRoutes } from "./hello";
 import { inviteRoutes } from "./invite";
 import { inviteLinkRoutes } from "./inviteLink";
 import { peopleRoutes } from "./people";
-import { campaignRoutes } from "./alliance";
-import Airtable from "airtable";
 import * as dotenv from "dotenv";
 import { prefix } from './infrastructure/routeManager';
 import { knex } from './infrastructure/knex';
@@ -29,8 +27,6 @@ dotenv.config({ path: '.env' });
 export let server: Server;
 
 export const init = async function(): Promise<Server> {
-
-    Airtable.configure({ apiKey: process.env.AIRTABLE_APIKEY });
 
     server = Hapi.server({
         port: process.env.PORT || 4000,
@@ -94,9 +90,6 @@ export const init = async function(): Promise<Server> {
     server.route(setPrefix(inviteRoutes));
     server.route(setPrefix(inviteLinkRoutes));
     server.route(setPrefix(peopleRoutes));
-    server.route(setPrefix(campaignRoutes));
-
-
 
     return server;
 };
