@@ -102,7 +102,8 @@ async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> 
     event:event,
     baseUrl: baseUrl,
     qrCode: qrCode, 
-    invites: invites
+    invites: invites,
+    eventUrl: eventUrl
   });
 }
 
