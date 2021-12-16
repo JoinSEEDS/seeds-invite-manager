@@ -4,6 +4,8 @@ import { AuthToken } from '../models/AuthToken'
 import { InviteEvent } from '../models/InviteEvent'
 import { SeedsInvite } from '../models/SeedsInvite';
 import { InviteImport } from '../models/InviteImport';
+import { SeedsInvites_All } from '../models/indexes/SeedsInvites_All';
+import { init } from '../server';
 
 dotenv.config({ path: '.env' });
 
@@ -20,5 +22,10 @@ store.conventions.registerEntityType(InviteImport);
 store.conventions.identityPartsSeparator = '-';
 store.conventions.identityProperty = "Id";
 store.initialize();
+
+async function initIndexes() {    
+  await store.executeIndex(new SeedsInvites_All());
+}
+initIndexes();
 
 export { store as documentStore };
