@@ -3,6 +3,7 @@ import { InviteEvent, InviteEventStatus } from "./models/InviteEvent";
 import {v4 as uuidv4} from 'uuid';
 import { response } from "express";
 import { InviteStatus, SeedsInvite } from "./models/SeedsInvite";
+import { RavenDbProcessMonitor } from "./infrastructure/ravenDBProcessMonitor";
 
 const PassportUrl = "https://joinseeds.app.link/accept-invite?invite-secret=";
 
@@ -14,24 +15,31 @@ async function inviteItem(request: Request, h: ResponseToolkit): Promise<Respons
                                     .firstOrNull();
 
     if(event?.Status == InviteEventStatus.Active){
-      var invite  = await ravenSession.query<SeedsInvite>({collection:"SeedsInvites"})
-                                      .whereEquals("EventId", event.Id)
-                                      .whereEquals("Status", InviteStatus.Available)
-                                      .firstOrNull();
-      if (invite != null) {
-        invite.Status = InviteStatus.Sent;
-        invite.SentOn = new Date();
+      var monitor = new RavenDbProcessMonitor();
+
+      var lockIndex = await monitor.lockResource(event.Id);
+      try {
+        var invite  = await ravenSession.query<SeedsInvite>({collection:"SeedsInvites"})
+                                        .waitForNonStaleResults()
+                                        .whereEquals("EventId", event.Id)
+                                        .whereEquals("Status", InviteStatus.Available)
+                                        .firstOrNull();
+        if (invite != null) {
+          invite.Status = InviteStatus.Sent;
+          invite.SentOn = new Date();
+          
+          ravenSession.saveChanges();
+
+          return h.redirect( PassportUrl + invite.Secret );
+        }
         
-        return h.redirect( PassportUrl + invite.Secret );
+        // Handle if no invites are available
+
+      } finally {
+        await monitor.releaseResource(event.Id, lockIndex);
       }
     }
-    //TODO: Redirect to invite from the event pool
-    //1. Create a lock
-    //2. Pull a invite from the pool
-    //3. Mark it as 'sent' with current datetime
-    //4. Release the lock
-    //5. Redirect the person to the invite
-
+    
     return h.response("redirect to invite");
 }
 

@@ -75,6 +75,8 @@
     "jquery": "^3.6.0",
     "knex": "^0.95.11",
     "markdown-it": "^12.2.0",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.34",
     "node-fetch": "^2.6.5",
     "pg": "^8.7.1",
     "qrcode": "^1.5.0",
