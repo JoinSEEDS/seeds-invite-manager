@@ -1,10 +1,14 @@
-# SEEDS Campaign Explorer
+# SEEDS Invite Manager
 
 In order to initalize for development make sure you have installed [npx](https://www.npmjs.com/package/npx) and [typescript](https://www.npmjs.com/package/typescript).
 
 Initialize enviorment variables through creating the proper `.env` file in root (use [.env-template](.env-template) for reference).
 
-Current applicaiton is running at https://www.thenotch.de/network/campaigns
+That includes:
+- Set up a new database on an [RavenDB](https://ravendb.net/) server. 
+- Link to an [SEEDS Authenticator](https://github.com/seeds-passport/seeds-authenticator) app.
+
+Current applicaiton is running at https://invites.joinseeds.earth
 
 ## Running
 
