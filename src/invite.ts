@@ -1,5 +1,5 @@
 import { Request, ResponseToolkit, ResponseObject, ServerRoute } from "@hapi/hapi"
-import { InviteEvent } from "./models/InviteEvent"
+import { InviteEvent, InviteEventStatus } from "./models/InviteEvent"
 import {v4 as uuidv4} from 'uuid'
 import QRCode from 'qrcode'
 import { InviteImport } from "./models/InviteImport"
@@ -7,6 +7,7 @@ import { InviteStatus, SeedsInvite } from "./models/SeedsInvite"
 import { OrderingType } from 'ravendb'
 import { SeedsInvites_All } from "./models/indexes/SeedsInvites_All"
 import { GetHashFromSecret, GetInvitesForAccount } from "./infrastructure/telosClient"
+import e from "express"
 
 async function eventsList(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     var ravenSession = request.server.plugins.ravendb.session;
@@ -37,10 +38,23 @@ async function eventsStore(request: Request, h: ResponseToolkit): Promise<Respon
     var ravenSession = request.server.plugins.ravendb.session;
     var viewModel = <InviteEvent>request.payload;
 
-    var model = new InviteEvent(viewModel);
     
-    model.AccountId = <string>request.auth.credentials.SeedsAccount;
-    model.Slug = uuidv4().slice(28);
+
+    var model:InviteEvent = null;
+    if (!viewModel.Id) {
+      model = new InviteEvent(viewModel);
+      model.AccountId = <string>request.auth.credentials.SeedsAccount;
+      if (!model.Slug) {
+        model.Slug = uuidv4().slice(28);
+      }
+    } else {
+      model = await ravenSession.load<InviteEvent>(viewModel.Id)
+    }
+    model.Name = viewModel.Name;
+    model.Application = viewModel.Application;
+    //TODO: validate if Slug is unique
+    model.Slug = viewModel.Slug;
+    
 
     await ravenSession.store(model);
 
@@ -81,6 +95,20 @@ async function importSave(request: Request, h: ResponseToolkit): Promise<Respons
   }
 
   await ravenSession.store(viewModel);
+
+  return h.redirect("/events/view/"+event.Id);
+}
+
+async function toggleStatus(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
+  var ravenSession = request.server.plugins.ravendb.session;
+  var id = request.params.id;
+  var event = await ravenSession.load<InviteEvent>(id);
+
+  if(event.Status == InviteEventStatus.Active){
+    event.Status = InviteEventStatus.Inactive;
+  } else {
+    event.Status = InviteEventStatus.Active;
+  }
 
   return h.redirect("/events/view/"+event.Id);
 }
@@ -154,5 +182,10 @@ export const inviteRoutes: ServerRoute[] = [
     method: "POST",
     path: "/events/import/{id}",
     handler: importSave
+  },
+  {
+    method: "GET",
+    path: "/events/toggleStatus/{id}",
+    handler: toggleStatus
   }
 ];

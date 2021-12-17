@@ -1,7 +1,7 @@
 {
-  "name": "seeds-campaign-explorer",
+  "name": "seeds-invite-manager",
   "version": "0.5.0",
-  "description": "A explorer for viewing the SEEDS Co-op Campaigns.",
+  "description": "An app that manages Invites for the SEEDS Regenerative Cryptocurrency.",
   "main": "dist/app",
   "typings": "dist/app",
   "scripts": {

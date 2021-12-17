@@ -8,6 +8,19 @@
                 <label for="Name">Name</label>
             </div>
             
+            <div class="form-floating mb-2">
+                <select  class="form-select" name="Application" id="Application" >
+                    <option value="Wallet" {{{select event.Application 'Wallet'}}}>Wallet</option>
+                    <option value="Passport" {{{select event.Application 'Passport'}}}>Passport</option>
+                </select>
+                <label for="Name">Application</label>
+            </div>
+
+            <div class="form-floating mb-2">
+                <input type="text" class="form-control" name="Slug" id="Slug" value="{{event.Slug}}" />
+                <label for="Slug">Slug (auto-generated if empty)</label>
+            </div>
+
             <button type="submit" class="btn btn-success">
                 Save
             </button>

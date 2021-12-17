@@ -28,12 +28,12 @@ function css() {
 
 function js() {
    return gulp.src([
-       'node_modules/@popperjs/core/dist/cjs/popper.js',
+       'node_modules/@popperjs/core/dist/umd/popper.js',
        'node_modules/bootstrap/dist/js/bootstrap.js',
-       'node_modules/jquery/dist/jquery.min.js'
+       'node_modules/jquery/dist/jquery.js'
     ])
       //.pipe(concat('scripts.min.js'))
-      .pipe(uglify())
+      //.pipe(uglify())
       .pipe(gulp.dest('assets/lib/js'));
 }
 

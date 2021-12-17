@@ -13,7 +13,7 @@
     </div>
     <div class="col-8">
         <div class="btn-group  float-end">
-        <a class="btn btn-outline-secondary" title="stop campaign">
+        <a class="btn btn-{{eventStatusColor event.Status}}" data-bs-toggle="tooltip" data-bs-placement="left" title="Status: {{event.Status}}" href="{{checkPrefix "/events/toggleStatus/"}}{{event.Id}}">
             <i class="fa fa-power-off"></i>
         </a>
         <a class="btn btn-outline-secondary btn-sm" href="{{checkPrefix "/events/import/"}}{{event.Id}}">
@@ -71,6 +71,11 @@
     }
     initCopy();
     
+
+    $( document ).ready(function() {
+        $('[data-bs-toggle="tooltip"]').tooltip()
+    });
+
 </script>
 
 {{/section}}
