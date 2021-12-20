@@ -13,7 +13,7 @@ export class InviteEvent {
     }
 }
 
-enum InviteApp {
+export enum InviteApp {
     Wallet = "Wallet",
     Passport = "Passport"
 }

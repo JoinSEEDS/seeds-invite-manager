@@ -11,6 +11,9 @@ export class SeedsInvite {
     public SowQuantityString: string
     public TransferQuantityString: string
     
+    public WalletDynamicLink:string
+    public WalletDynamicLinkInfo:object
+
     public constructor(init?:Partial<SeedsInvite>) {
         Object.assign(this, init);
     }
