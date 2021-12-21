@@ -1,4 +1,4 @@
-import { DocumentStore, IDocumentStore, IDocumentSession, IDocumentQuery } from 'ravendb';
+import { DocumentStore, IDocumentStore, IDocumentSession, IDocumentQuery, IAuthOptions } from 'ravendb';
 import * as dotenv from "dotenv";
 import { AuthToken } from '../models/AuthToken'
 import { InviteEvent } from '../models/InviteEvent'
@@ -6,6 +6,7 @@ import { SeedsInvite } from '../models/SeedsInvite';
 import { InviteImport } from '../models/InviteImport';
 import { SeedsInvites_All } from '../models/indexes/SeedsInvites_All';
 import { init } from '../server';
+import * as fs from "fs";
 
 dotenv.config({ path: '.env' });
 
@@ -13,7 +14,16 @@ if(process.env.DATABASE_URL == null){
   dotenv.config({ path: '../../.env' });
 }
 
-const store = new DocumentStore(process.env.RAVENDB_URL||'', process.env.RAVENDB_DATABASE||'');
+var authOptions:IAuthOptions = null;
+if(process.env.RAVENDB_CERTIFICATE){
+  authOptions = {
+    certificate: fs.readFileSync(process.env.RAVENDB_CERTIFICATE),
+    type: "pfx", // or "pem"
+    password: ""
+  };
+}
+
+const store = new DocumentStore(process.env.RAVENDB_URL||'', process.env.RAVENDB_DATABASE||'', authOptions);
 
 store.conventions.registerEntityType(AuthToken);
 store.conventions.registerEntityType(InviteEvent);
