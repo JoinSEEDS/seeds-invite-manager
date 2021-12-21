@@ -58,7 +58,7 @@ async function eventsStore(request: Request, h: ResponseToolkit): Promise<Respon
 
     await ravenSession.store(model);
 
-    return h.redirect("/events");
+    return h.redirect("/events/view/"+model.Id);
 }
 
 async function importView(request: Request, h: ResponseToolkit): Promise<ResponseObject> {

@@ -57,7 +57,7 @@ async function checkQr(request: Request, h: ResponseToolkit): Promise<ResponseOb
     return h.response("ok");
   } else {
     if (response.status==404) {
-      return h.response("refresh");
+      return h.response("pending");
     }
     if (response.status==403) {
       return h.response("pending");
