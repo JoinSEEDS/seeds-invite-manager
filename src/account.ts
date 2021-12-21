@@ -1,9 +1,8 @@
 import { Request, ResponseToolkit, ResponseObject, ServerRoute } from "@hapi/hapi";
 import { knex } from './infrastructure/knex';
-import fetch from 'node-fetch'; 
-import { Response as FetchResponse } from 'node-fetch'
+
 import { AuthToken } from "./models/AuthToken";
-import { checkResponse, infoResponse, newResponse, qrResponse } from './infrastructure/seedsAuthenticator';
+import { checkAuth, checkResponse, getAccountInfo, infoResponse, newResponse, qrResponse } from './infrastructure/seedsAuthenticator';
 import { IIdentifiable } from "./models/IIdentifiable";
 import Boom from '@hapi/boom'
 import { documentStore } from "./database/ravenDb"
@@ -64,38 +63,6 @@ async function checkQr(request: Request, h: ResponseToolkit): Promise<ResponseOb
     }
     throw new RangeError(response.status.toString());
   }
-}
-
-async function checkAuth(authToken:AuthToken|undefined): Promise<FetchResponse> {
-  var url = process.env.AUTH_URL+'/api/v1/check/' + authToken?.AuthId;
-  console.log(url);
-  const response = await fetch(url, { 
-      method: 'post', 
-      body: JSON.stringify({
-        token: authToken?.Token
-      }), 
-      headers: {'Content-Type': 'application/json'} 
-  });
-
-  //console.log(await response.text());
-  const data = (await response.json() as checkResponse).message;
-  return response;
-}
-
-async function getAccountInfo(authToken:AuthToken|undefined): Promise<infoResponse> {
-  var url = process.env.AUTH_URL+'/api/v1/info/' + authToken?.AuthId;
-  console.log(url);
-  const response = await fetch(url, { 
-      method: 'post', 
-      body: JSON.stringify({
-        token: authToken?.Token
-      }), 
-      headers: {'Content-Type': 'application/json'} 
-  });
-
-  //console.log(await response.text());
-  const data = (await response.json() as infoResponse);
-  return data;
 }
 
 async function auth(request: Request, h: ResponseToolkit): Promise<ResponseObject> {

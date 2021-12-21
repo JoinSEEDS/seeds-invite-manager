@@ -47,14 +47,13 @@ export const init = async function(): Promise<Server> {
         },
         redirectTo: '/login',
         validateFunc: async (request, session: any) => {
-            //var authInfo = await knex<AuthToken>("AuthTokens").where( "Id", session.Id ).first();
             var ravenSession = request?.server.plugins.ravendb.session||documentStore.openSession();
             var authInfo = await ravenSession.load<AuthToken>(session.id);
             if (!authInfo?.IsSigned) {
-              
+
               return { valid: false };
             }
-            //console.log("auth with id: "+authInfo.Id);
+            //TODO: check QR every 1-2 min
 
             return { valid: true, credentials: authInfo };
         }

@@ -1,4 +1,41 @@
-import fetch from 'node-fetch';
+import { AuthToken } from "../models/AuthToken";
+import fetch from 'node-fetch'; 
+import { Response } from 'node-fetch'
+
+export async function checkAuth(authToken:AuthToken|undefined): Promise<Response> {
+    var url = process.env.AUTH_URL+'/api/v1/check/' + authToken?.AuthId;
+    console.log(url);
+    const response = await fetch(url, { 
+        method: 'post', 
+        body: JSON.stringify({
+          token: authToken?.Token
+        }), 
+        headers: {'Content-Type': 'application/json'} 
+    });
+  
+    //console.log(await response.text());
+    const data = (await response.json() as checkResponse).message;
+    return response;
+}
+
+  
+
+export async function getAccountInfo(authToken:AuthToken|undefined): Promise<infoResponse> {
+    var url = process.env.AUTH_URL+'/api/v1/info/' + authToken?.AuthId;
+    console.log(url);
+    const response = await fetch(url, { 
+        method: 'post', 
+        body: JSON.stringify({
+          token: authToken?.Token
+        }), 
+        headers: {'Content-Type': 'application/json'} 
+    });
+  
+    //console.log(await response.text());
+    const data = (await response.json() as infoResponse);
+    return data;
+}
+
 
 async function newToken(){
     const response = await fetch(process.env.AUTH_URL+'/new', { method: 'POST' });
