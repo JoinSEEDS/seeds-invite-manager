@@ -113,6 +113,19 @@ async function toggleStatus(request: Request, h: ResponseToolkit): Promise<Respo
   return h.redirect("/events/view/"+event.Id);
 }
 
+async function toggleInviteStatus(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
+  var ravenSession = request.server.plugins.ravendb.session;
+  var id = request.params.id;
+  var invite = await ravenSession.load<SeedsInvite>(id);
+
+  if(invite.Status == InviteStatus.Sent){
+    invite.Status = InviteStatus.Available;
+    invite.SentOn = null;
+  }
+
+  return h.redirect("/events/view/"+invite.EventId);
+}
+
 async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> {
   var id = request.params.id;
   var ravenSession = request.server.plugins.ravendb.session;
@@ -187,5 +200,10 @@ export const inviteRoutes: ServerRoute[] = [
     method: "GET",
     path: "/events/toggleStatus/{id}",
     handler: toggleStatus
+  },
+  {
+    method: "GET",
+    path: "/events/toggleInviteStatus/{id}",
+    handler: toggleInviteStatus
   }
 ];

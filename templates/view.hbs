@@ -39,6 +39,11 @@
                     <div class="badge bg-{{inviteStatusColor Status}}">
                         {{Status}}
                     </div>
+                    {{#if (isSentStatus Status)}}
+                    <a class="btn btn-outline-secondary btn-sm" href="{{checkPrefix "/events/toggleInviteStatus/"}}{{Id}}">
+                        <i class="fa fa-recycle"></i>
+                    </a>
+                    {{/if}}
                 </td>
                 <td>
                     {{#if (isRedeemed Status)}}
