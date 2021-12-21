@@ -37,11 +37,10 @@ export async function getAccountInfo(authToken:AuthToken|undefined): Promise<inf
 }
 
 
-async function newToken(){
-    const response = await fetch(process.env.AUTH_URL+'/new', { method: 'POST' });
-    const data = await response.json();
-    
-    return data;
+export async function createNewAuth() : Promise<newMessage> {
+    console.log(process.env.AUTH_URL+'/api/v1/new');
+    var response = await fetch(process.env.AUTH_URL+'/api/v1/new', { method: 'post', body:JSON.stringify({}), headers: {'Content-Type': 'application/json'} });
+    return (await response.json() as newResponse).message;
 }
 
 export class qrResponse {
@@ -76,9 +75,4 @@ export class infoResponse {
     public story: string = ''
     public timestamp: number = 0
     public type: string = ''
-}
-
-export  {
-    newToken,
-
 }

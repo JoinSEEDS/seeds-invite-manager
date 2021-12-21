@@ -1,22 +1,17 @@
-import { Request, ResponseToolkit, ResponseObject, ServerRoute } from "@hapi/hapi";
-import { knex } from './infrastructure/knex';
-
-import { AuthToken } from "./models/AuthToken";
-import { checkAuth, checkResponse, getAccountInfo, infoResponse, newResponse, qrResponse } from './infrastructure/seedsAuthenticator';
-import { IIdentifiable } from "./models/IIdentifiable";
+import { Request, ResponseToolkit, ResponseObject, ServerRoute } from "@hapi/hapi"
+import { AuthToken } from "./models/AuthToken"
+import { checkAuth, checkResponse, createNewAuth, getAccountInfo, infoResponse, newResponse, qrResponse } from './infrastructure/seedsAuthenticator'
+import { IIdentifiable } from "./models/IIdentifiable"
 import Boom from '@hapi/boom'
 import { documentStore } from "./database/ravenDb"
-
+import fetch from 'node-fetch'
 
 async function login(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
   if(request.auth.isAuthenticated == true){
     return h.redirect('/');
   }
 
-  console.log(process.env.AUTH_URL+'/api/v1/new');
-  const response = await fetch(process.env.AUTH_URL+'/api/v1/new', { method: 'post', body:JSON.stringify({}), headers: {'Content-Type': 'application/json'} });
-  //console.log(await response.text());
-  const data = (await response.json() as newResponse).message;
+  const data = await createNewAuth();
 
   var authToken = new AuthToken({ 
       AuthId: data?.id,
