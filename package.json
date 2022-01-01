@@ -5,8 +5,8 @@
   "main": "dist/app",
   "typings": "dist/app",
   "scripts": {
-    "justrun": "node dist/app.js",
-    "start": "tsc && node dist/app.js",
+    "start": "node dist/app.js",
+    "buildandstart": "tsc && node dist/app.js",
     "test": "cross-env NODE_ENV=test mocha -r ts-node/register test/**/*.test.ts",
     "clean": "npx rimraf dist",
     "clean:node": "npx rimraf node_modules",

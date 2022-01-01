@@ -6,5 +6,11 @@
     ],
     "css.enabledLanguages": [
         "html", "hbs"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/f3167716-6b8a-4d06-a220-3dcd81a6927d/resourceGroups/Default-Web-NorthEurope/providers/Microsoft.Web/sites/nodetestinvites",
+    "appService.deploySubpath": ".",
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
     ]
 }

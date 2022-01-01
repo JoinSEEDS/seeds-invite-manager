@@ -30,7 +30,7 @@ export const init = async function(): Promise<Server> {
 
     server = Hapi.server({
         port: process.env.PORT || 4000,
-        host: 'localhost',
+        host: process.env.HOST || "localhost",
         debug: { request: ['error'] }
     });
 
@@ -111,11 +111,11 @@ async function registerVision(server: Server) {
   
     await server.register(hapiVision);
   
-    if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
-      cached = false;
-    } else {
-      cached = true;
-    }
+    // if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+    //   cached = false;
+    // } else {
+    //   cached = true;
+    // }
     server.log(["debug"], `Caching templates: ${cached}`);
     
     // var hbs = require("handlebars");
