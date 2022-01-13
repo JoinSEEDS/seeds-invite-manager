@@ -7,6 +7,7 @@ import { documentStore } from "./database/ravenDb"
 import fetch from 'node-fetch'
 
 async function login(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
+  console.log(`Login page ${request.server.settings.host}:${request.server.settings.port}`);
   if(request.auth.isAuthenticated == true){
     return h.redirect('/');
   }

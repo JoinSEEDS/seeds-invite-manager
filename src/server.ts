@@ -144,7 +144,7 @@ process.on('unhandledRejection', (err) => {
 });
 
 async function index(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
-    console.log("Processing request", request.info.id);
+    console.log("Processing request ", request.info.id);
     return h.redirect('/events');
     //return "Hello! Random act of kindness.";
 }
