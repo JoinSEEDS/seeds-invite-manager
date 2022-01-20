@@ -44,9 +44,6 @@ async function eventsStore(request: Request, h: ResponseToolkit): Promise<Respon
     if (!viewModel.Id) {
       model = new InviteEvent(viewModel);
       model.AccountId = <string>request.auth.credentials.SeedsAccount;
-      if (!model.Slug) {
-        model.Slug = uuidv4().slice(28);
-      }
     } else {
       model = await ravenSession.load<InviteEvent>(viewModel.Id)
     }
@@ -54,6 +51,9 @@ async function eventsStore(request: Request, h: ResponseToolkit): Promise<Respon
     model.Application = viewModel.Application;
     //TODO: validate if Slug is unique
     model.Slug = viewModel.Slug;
+    if (!model.Slug) {
+      model.Slug = uuidv4().slice(28);
+    }
     
 
     await ravenSession.store(model);

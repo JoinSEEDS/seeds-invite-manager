@@ -87,7 +87,11 @@ export const init = async function(): Promise<Server> {
     server.route(accR);
     server.route(setPrefix(helloRoutes));
     server.route(setPrefix(inviteRoutes));
-    server.route(setPrefix(inviteLinkRoutes));
+    var inviteLinks = setPrefix(inviteLinkRoutes);
+    inviteLinks.forEach(route => {
+      route.options = { auth: { mode: 'try' } };
+    });
+    server.route(inviteLinks);
     server.route(setPrefix(peopleRoutes));
 
     return server;

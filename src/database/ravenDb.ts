@@ -10,7 +10,7 @@ import * as fs from "fs";
 
 dotenv.config({ path: '.env' });
 
-if(process.env.DATABASE_URL == null){
+if(process.env.AUTH_URL == null){
   dotenv.config({ path: '../../.env' });
 }
 
