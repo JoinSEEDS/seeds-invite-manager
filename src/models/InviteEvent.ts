@@ -6,7 +6,12 @@ export class InviteEvent {
     public Application:InviteApp = InviteApp.Wallet
     public AccountId: string = ''
     public Status:InviteEventStatus = InviteEventStatus.Inactive
+    public Permalink: string
+    public QRCode: string
 
+    public AvailableCount: number
+    public SentCount: number
+    public RedeemedCount: number 
 
     public constructor(init?:Partial<InviteEvent>) {
         Object.assign(this, init);

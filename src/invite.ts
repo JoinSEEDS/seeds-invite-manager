@@ -8,6 +8,7 @@ import { OrderingType } from 'ravendb'
 import { SeedsInvites_All } from "./models/indexes/SeedsInvites_All"
 import { GetHashFromSecret, GetInvitesForAccount } from "./infrastructure/telosClient"
 import e from "express"
+import { SeedsInvites_Stats, SeedsInvites_Stats_ReduceResult } from "./models/indexes/SeedsInvites_Stats"
 
 async function eventsList(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     var ravenSession = request.server.plugins.ravendb.session;
@@ -15,6 +16,31 @@ async function eventsList(request: Request, h: ResponseToolkit): Promise<Respons
     var events = await ravenSession.query<InviteEvent>({collection:"InviteEvents"})
                                     .whereEquals("AccountId", request.auth.credentials.SeedsAccount)
                                     .all();
+
+    var inviteStats = await ravenSession.query<SeedsInvites_Stats_ReduceResult>({ index: SeedsInvites_Stats })
+                              .whereEquals("AccountId", request.auth.credentials.SeedsAccount)
+                              //.projectInto<SeedsInvites_Stats_ReduceResult>()
+                              .all();
+
+    for ( var i=0; i < events.length; i++ ) {
+        var event = events[i];
+        var stats = inviteStats.find(x=>x.EventId == event.Id);
+        if(stats){
+          event.AvailableCount = stats.AvailableCount;
+          event.SentCount = stats.SentCount;
+          event.RedeemedCount = stats.RedeemedCount;
+        }
+      }
+    events = events.sort((x,y)=> {
+      if(x.Status == y.Status){
+        return 0;
+      }
+      if(x.Status == InviteEventStatus.Active){
+          return -1;
+      }
+    
+      return 1; 
+  });
 
     return h.view("eventsList", {
         events: events
@@ -118,7 +144,7 @@ async function toggleInviteStatus(request: Request, h: ResponseToolkit): Promise
   var id = request.params.id;
   var invite = await ravenSession.load<SeedsInvite>(id);
 
-  if(invite.Status == InviteStatus.Sent){
+  if ( invite.Status == InviteStatus.Sent ) {
     invite.Status = InviteStatus.Available;
     invite.SentOn = null;
   }
@@ -134,6 +160,9 @@ async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> 
   var baseUrl = `${request.headers['x-forwarded-proto'] || request.server.info.protocol}://${request.headers['x-forwarded-host'] || request.info.host}`;
   var eventUrl = `${baseUrl}/i/${event.Slug}`;
   var qrCode = await QRCode.toDataURL(eventUrl);
+
+  event.Permalink = eventUrl;
+  event.QRCode = qrCode;
 
   var invites = await ravenSession.query<SeedsInvite>({index: SeedsInvites_All})
                                   .whereEquals("EventId", event.Id)

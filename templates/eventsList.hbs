@@ -1,39 +1,36 @@
 <div class="row">
     <div class="col">
-        <a class="btn btn-success" href="{{checkPrefix "/events/edit"}}">
+        <a class="btn btn-success my-2" href="{{checkPrefix "/events/edit"}}">
         <i class="fa fa-plus"></i>
         New Event
         </a>
 
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Date</th>
-                    <th>Invites</th>
-                    <th>Sent</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each events}}
-                <tr>
-                    <td>
-                        <a href="{{checkPrefix "/events/view/"}}{{Id}}">{{Name}}</a>
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <a class="btn btn-outline-secondary" href="{{checkPrefix "/events/edit/"}}{{Id}}">
-                        <i class="fa fa-pen"></i>
-                        </a>
-                    </td>
-                </tr>
-                {{/each}}
-            </tbody>
-        </table>
+    <div class="row">
+        {{#each events}}
+        <div class="col-3">
+            <div class="card">
+            <img src="{{QRCode}}" class="card-img-top" alt="{{Name}} QR Code" width="200" />
+            <div class="card-body">
+                <h5 class="card-title text-center">
+                    <a href="{{checkPrefix "/events/view/"}}{{Id}}">
+                        {{Name}}
+                    </a>
+                </h5>
+                <p class="card-text">
+                    <div class="float-end">
+                        <span class="badge bg-secondary">{{AvailableCount}}</span>
+                        <span class="badge bg-info">{{SentCount}}</span>
+                        <span class="badge bg-success">{{RedeemedCount}}</span>
+                    </div>
+                    <span class="badge bg-{{eventStatusColor Status 'badge'}}">{{Status}}</span>
+                </p>
+            </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+
     </div>
 </div>
 

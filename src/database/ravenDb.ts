@@ -7,6 +7,7 @@ import { InviteImport } from '../models/InviteImport';
 import { SeedsInvites_All } from '../models/indexes/SeedsInvites_All';
 import { init } from '../server';
 import * as fs from "fs";
+import { SeedsInvites_Stats } from '../models/indexes/SeedsInvites_Stats';
 
 dotenv.config({ path: '.env' });
 
@@ -35,6 +36,7 @@ store.initialize();
 
 async function initIndexes() {    
   await store.executeIndex(new SeedsInvites_All());
+  await store.executeIndex(new SeedsInvites_Stats()); 
 }
 initIndexes();
 
