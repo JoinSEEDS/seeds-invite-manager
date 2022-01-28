@@ -2,7 +2,9 @@
     <div class="col-4">
         <h1 class='text-center'>{{event.Name}}</h1>
         <div class="d-flex justify-content-center">
-            <img src="{{qrCode}}" alt="{{event.Name}} QR Code" width="200"  />
+            <a download="{{event.Name}}.png" href="{{qrCode}}">
+                <img src="{{qrCode}}" alt="{{event.Name}} QR Code" width="200"  />
+            </a>
         </div>
         <div class="d-flex justify-content-center">
             <a href="{{eventUrl}}" id="linkUrl" target="_blank">{{eventUrl}}</a>
