@@ -5,6 +5,8 @@ const cleanCSS = require('gulp-clean-css');
 const uglify = require('gulp-uglify');
 const imagemin = require('gulp-imagemin');
 const rename = require('gulp-rename');
+const sourcemaps = require('gulp-sourcemaps');
+const purgeSourcemaps = require('gulp-purge-sourcemaps');
 
 const cssDest = 'assets/lib/css';
 
@@ -20,6 +22,8 @@ function css() {
          'node_modules//bootstrap//dist//css//bootstrap.css'
       ]))
       //.pipe(concat('styles.css'))
+      .pipe(sourcemaps.init({loadMaps: true}))
+      .pipe(purgeSourcemaps())
       .pipe(gulp.dest(cssDest))
       .pipe(concat('all.min.css'))
       .pipe(cleanCSS())
@@ -34,6 +38,8 @@ function js() {
     ])
       //.pipe(concat('scripts.min.js'))
       //.pipe(uglify())
+      .pipe(sourcemaps.init({loadMaps: true}))
+      .pipe(purgeSourcemaps())
       .pipe(gulp.dest('assets/lib/js'));
 }
 
