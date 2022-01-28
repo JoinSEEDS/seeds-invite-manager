@@ -18,12 +18,17 @@
                     </a>
                 </h5>
                 <p class="card-text">
-                    <div class="float-end">
-                        <span class="badge bg-secondary">{{AvailableCount}}</span>
-                        <span class="badge bg-info">{{SentCount}}</span>
-                        <span class="badge bg-success">{{RedeemedCount}}</span>
+                    <div class="row">
+                        <div class="col">
+                            <span class="badge bg-{{eventStatusColor Status 'badge'}}">{{Status}}</span>
+                        </div>
+                        <div class="col-auto">
+                            <span class="badge bg-secondary">{{AvailableCount}}</span>
+                            <span class="badge bg-info">{{SentCount}}</span>
+                            <span class="badge bg-success">{{RedeemedCount}}</span>
+                        </div>
                     </div>
-                    <span class="badge bg-{{eventStatusColor Status 'badge'}}">{{Status}}</span>
+                    
                 </p>
             </div>
             </div>

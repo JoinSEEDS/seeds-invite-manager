@@ -6,8 +6,8 @@
         </a>
         </h1>
         <p>
-            In order to create multiple invites, please go to the SEEDS Passport app under "Manage Your Invites" menu item
-            > "Campaings". Once you create a campaign with the desired parameters, please click 'export' and paste the resulting list of 
+            Please go to the SEEDS Passport app under "Manage Your Invites" menu item
+            > "Campaigns". Create a campaign with the desired parameters, click 'export' and paste the resulting list of 
             invite URLs in the texbox below.
         </p>
         <input type="hidden" id="InviteEventId" name="InviteEventId" value="{{event.Id}}"  />
@@ -17,9 +17,11 @@
             </div>
             
             <button type="submit" class="btn btn-success">
+                <i class="fa fa-download"></i>
                 Import
             </button>
             <a class="btn btn-outline-secondary" href="{{checkPrefix "/events/view/"}}{{event.Id}}">
+                <i class="fa fa-chevron-left"></i>
                 Back to Event
             </a>
     </form>

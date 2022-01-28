@@ -73,6 +73,7 @@ async function eventsStore(request: Request, h: ResponseToolkit): Promise<Respon
     }
     model.Name = viewModel.Name;
     model.Application = viewModel.Application;
+    model.Status = InviteEventStatus.Active;
     //TODO: validate if Slug is unique
     model.Slug = viewModel.Slug;
     if (!model.Slug) {
@@ -86,6 +87,12 @@ async function eventsStore(request: Request, h: ResponseToolkit): Promise<Respon
     }
 
     return h.redirect("/events/view/"+model.Id);
+}
+
+async function afterCreate(request:Request, h:ResponseToolkit):Promise<ResponseObject> {
+  var id = request.params.id;
+  
+  return h.view("afterCreate", { id: id });
 }
 
 async function importView(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
@@ -152,11 +159,7 @@ async function toggleInviteStatus(request: Request, h: ResponseToolkit): Promise
 
   return h.redirect("/events/view/"+invite.EventId);
 }
-async function afterCreate(request:Request, h:ResponseToolkit):Promise<ResponseObject> {
-  var id = request.params.id;
-  
-  return h.view("afterCreate", { id: id });
-}
+
 async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> {
   var id = request.params.id;
   var ravenSession = request.server.plugins.ravendb.session;
