@@ -133,19 +133,43 @@ async function importSave(request: Request, h: ResponseToolkit): Promise<Respons
   viewModel.AccountId = event.AccountId;
   viewModel.SecretIdsImported = new Array<string>();
 
-  var rows = viewModel.ImportText.split('\r\n');
-  for(var i=0;i< rows.length;i++){
-    var secret = rows[i].split('=')[1].trim();
-    var invite = new SeedsInvite();
-    invite.EventId = event.Id;
-    invite.AccountId = event.AccountId;
-    invite.Secret = secret;
-    invite.Hash = GetHashFromSecret(secret);
-
-    await ravenSession.store(invite);
-
-    viewModel.SecretIdsImported.push(invite.Id??"");
+  var list = new Array<SeedsInvite>();
+  try {
+    var rows = viewModel.ImportText.split('\r\n');
+    for(var i=0;i< rows.length;i++){
+      var secret = rows[i].split('=')[1].trim();
+      var invite = new SeedsInvite();
+      invite.EventId = event.Id;
+      invite.AccountId = event.AccountId;
+      invite.Secret = secret;
+      invite.Hash = GetHashFromSecret(secret);
+      
+      list.push(invite);
+    }
+  } catch {
+    return h.view("import", {
+      event: event,
+      error: "We encountered an error in parsing the invites string. Please check if the format is correct and try again."
+    });
   }
+  var secrets = list.map(x=>x.Secret);
+  var existingInvites = await ravenSession.query<SeedsInvite>({index:SeedsInvites_All})
+                                          .whereIn("Secret",secrets)
+                                          .all();
+  var skippedInvites = 0;
+  for (var i=0; i<list.length; i++) {
+    var invite = list[i];
+    var existing = existingInvites.find(x=>x.Secret == invite.Secret);
+    if(!existing){
+      await ravenSession.store(invite);
+        
+      viewModel.SecretIdsImported.push(invite.Id??"");
+    } else {
+      skippedInvites++;
+    }
+  }
+
+  console.log(`Skipped invites: ${skippedInvites}`)
 
   await ravenSession.store(viewModel);
 
