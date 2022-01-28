@@ -64,8 +64,6 @@ async function eventsStore(request: Request, h: ResponseToolkit): Promise<Respon
     var ravenSession = request.server.plugins.ravendb.session;
     var viewModel = <InviteEvent>request.payload;
 
-    
-
     var model:InviteEvent = null;
     if (!viewModel.Id) {
       model = new InviteEvent(viewModel);
@@ -81,8 +79,11 @@ async function eventsStore(request: Request, h: ResponseToolkit): Promise<Respon
       model.Slug = uuidv4().slice(28);
     }
     
-
     await ravenSession.store(model);
+
+    if (!viewModel.Id) {
+      return h.redirect("/events/aftercreate/"+model.Id);
+    }
 
     return h.redirect("/events/view/"+model.Id);
 }
@@ -151,7 +152,11 @@ async function toggleInviteStatus(request: Request, h: ResponseToolkit): Promise
 
   return h.redirect("/events/view/"+invite.EventId);
 }
-
+async function afterCreate(request:Request, h:ResponseToolkit):Promise<ResponseObject> {
+  var id = request.params.id;
+  
+  return h.view("afterCreate", { id: id });
+}
 async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> {
   var id = request.params.id;
   var ravenSession = request.server.plugins.ravendb.session;
@@ -210,6 +215,11 @@ export const inviteRoutes: ServerRoute[] = [
     method: "POST",
     path: "/events/edit",
     handler: eventsStore
+  },
+  {
+    method: "GET",
+    path: "/events/aftercreate/{id}",
+    handler: afterCreate
   },
   {
     method: "GET",
