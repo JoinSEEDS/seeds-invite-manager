@@ -38,6 +38,12 @@
 {{/unless}}
 
     <div class="container">
+      {{#if error}}
+      <div class="alert alert-danger alert-dismissible fade show w-50 mx-auto text-center">
+        {{error}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {{/if}}
       {{{content}}}
     </div>
 

@@ -15,6 +15,7 @@ export class InviteEvent {
 
     public constructor(init?:Partial<InviteEvent>) {
         Object.assign(this, init);
+        this.Slug = null;
     }
 }
 

@@ -64,6 +64,13 @@ async function eventsStore(request: Request, h: ResponseToolkit): Promise<Respon
     var ravenSession = request.server.plugins.ravendb.session;
     var viewModel = <InviteEvent>request.payload;
 
+    if (!viewModel.Name) {
+      return h.view("eventsEdit", {
+        event: viewModel,
+        error: "Event name should not be empty."
+      });
+    }
+
     var model:InviteEvent = null;
     if (!viewModel.Id) {
       model = new InviteEvent(viewModel);
@@ -74,8 +81,20 @@ async function eventsStore(request: Request, h: ResponseToolkit): Promise<Respon
     model.Name = viewModel.Name;
     model.Application = viewModel.Application;
     model.Status = InviteEventStatus.Active;
-    //TODO: validate if Slug is unique
-    model.Slug = viewModel.Slug;
+    if(model.Slug!=viewModel.Slug && viewModel.Slug != null){
+      var countSlugExisting = await ravenSession.query<InviteEvent>({ collection:"InviteEvents" })
+                                                .whereEquals("Slug",viewModel.Slug)
+                                                .whereNotEquals("Id",viewModel.Id)
+                                                .waitForNonStaleResults()
+                                                .count();
+      if ( countSlugExisting > 0 ) {
+        return h.view("eventsEdit", {
+          event: viewModel,
+          error: `An event with Permalink Slug '${viewModel.Slug}'  already exists.`
+        });
+      }
+      model.Slug = viewModel.Slug;
+    }
     if (!model.Slug) {
       model.Slug = uuidv4().slice(28);
     }
