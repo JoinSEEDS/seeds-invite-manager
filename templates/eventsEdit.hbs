@@ -17,7 +17,7 @@
             </div>
 
             <div class="form-floating mb-2">
-                <input type="text" class="form-control" name="Slug" id="Slug" value="{{event.Slug}}" />
+                <input type="text" class="form-control" name="Slug" id="Slug" value="{{event.Slug}}" {{disabled (isNewEvent event)}} />
                 <label for="Slug">Permalink Slug (auto-generated if empty)</label>
             </div>
 
