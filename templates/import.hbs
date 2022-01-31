@@ -6,9 +6,27 @@
         </a>
         </h1>
         <p>
-            Please go to the SEEDS Passport app under "Manage Your Invites" menu item
-            > "Campaigns". Create a campaign with the desired parameters, click 'export' and paste the resulting list of 
-            invite URLs in the texbox below.
+            In order to import new invites form SEEDS Passport:
+            <ol>
+                <li>
+                    Open SEEDS Passport App
+                </li>
+                <li>
+                    Make sure you are logged in with the account '{{auth.SeedsAccount}}'
+                </li>
+                <li>
+                     Go to "Community" > "Manage Your Invites" > "Campaigns" menu item.
+                </li>
+                <li>
+                    Create a campaign with the desired parameters
+                </li>
+                <li>
+                    Click 'Export'
+                </li>
+                <li>
+                    Paste the resulting list of invite URLs in the texbox below.
+                </li>
+            </ol>
         </p>
         <input type="hidden" id="InviteEventId" name="InviteEventId" value="{{event.Id}}"  />
             <div class="form-floating mb-2">
