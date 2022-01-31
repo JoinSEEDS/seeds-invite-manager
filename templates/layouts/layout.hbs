@@ -5,12 +5,17 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{checkPrefix "/assets/favicons/favicon-16x16.png"}}">
     <link rel="manifest" href="{{checkPrefix "/assets/favicons/site.webmanifest"}}">
 
+{{#if auth.ProfilePicture}}
+    {{!-- <link rel="preload" href="{{auth.ProfilePicture}}" as="image"> --}}
+{{/if}}
+
     <link href="{{checkPrefix "/assets/lib/css/bootstrap.css"}}" rel="stylesheet" />
     <link href="{{checkPrefix "/assets/lib/css/fontAwesome.css"}}" rel="stylesheet" />
     <link href="{{checkPrefix "/assets/lib/styles.css"}}" rel="stylesheet" />
   </head>
   <body>
 {{#unless hideMenu}}
+{{auth}}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container">
     <a class="navbar-brand h1" href="{{checkPrefix "/events"}}">SEEDS Invites</a>
@@ -28,7 +33,11 @@
         </li>
       </ul>
       <div class="d-flex">
-        <a class="btn btn-sm btn-outline-secondary" href="{{checkPrefix "/logout"}}">
+        {{#if auth}}
+          {{!-- <img width="20" height="20" src="{{auth.ProfilePicture}}" />  --}}
+           <span class="me-2">{{auth.SeedsAccount}}</span> 
+        {{/if}}
+        <a class="btn btn-sm btn-outline-secondary" href="{{checkPrefix "/logout"}}" title="Logout">
         <i class="fa fa-sign-out-alt"></i>
         </a>
       </div>

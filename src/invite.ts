@@ -9,9 +9,11 @@ import { SeedsInvites_All } from "./models/indexes/SeedsInvites_All"
 import { GetHashFromSecret, GetInvitesForAccount } from "./infrastructure/telosClient"
 import e from "express"
 import { SeedsInvites_Stats, SeedsInvites_Stats_ReduceResult } from "./models/indexes/SeedsInvites_Stats"
+import { RequestHelper } from "./infrastructure/RequestHelper"
 
 async function eventsList(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
-    var ravenSession = request.server.plugins.ravendb.session;
+    var helper = new RequestHelper(request,h);
+    var ravenSession = helper.ravenSession;
 
     var events = await ravenSession.query<InviteEvent>({collection:"InviteEvents"})
                                     .whereEquals("AccountId", request.auth.credentials.SeedsAccount)
@@ -42,30 +44,31 @@ async function eventsList(request: Request, h: ResponseToolkit): Promise<Respons
       return 1; 
   });
 
-    return h.view("eventsList", {
-        events: events
+    return helper.view("eventsList", {
+        events: events,
     });
 }
 
 async function eventsEdit(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
-    var ravenSession = request.server.plugins.ravendb.session;  
-    var id = request.params.id;
+    var helper = new RequestHelper(request,h);
+
     var event = new InviteEvent();
-    if (id) {
-      event = await ravenSession.load<InviteEvent>(id);
+    if (helper.id) {
+      event = await helper.ravenSession.load<InviteEvent>(helper.id);
     }
 
-    return h.view("eventsEdit", {
+    return helper.view("eventsEdit", {
       event: event
     });
 }
 
 async function eventsStore(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
-    var ravenSession = request.server.plugins.ravendb.session;
+    var helper = new RequestHelper(request, h);
+    var ravenSession = helper.ravenSession;
     var viewModel = <InviteEvent>request.payload;
 
     if (!viewModel.Name) {
-      return h.view("eventsEdit", {
+      return helper.view("eventsEdit", {
         event: viewModel,
         error: "Event name should not be empty."
       });
@@ -74,7 +77,7 @@ async function eventsStore(request: Request, h: ResponseToolkit): Promise<Respon
     var model:InviteEvent = null;
     if (!viewModel.Id) {
       model = new InviteEvent(viewModel);
-      model.AccountId = <string>request.auth.credentials.SeedsAccount;
+      model.AccountId = helper.auth.SeedsAccount;
     } else {
       model = await ravenSession.load<InviteEvent>(viewModel.Id)
     }
@@ -88,7 +91,7 @@ async function eventsStore(request: Request, h: ResponseToolkit): Promise<Respon
                                                 .waitForNonStaleResults()
                                                 .count();
       if ( countSlugExisting > 0 ) {
-        return h.view("eventsEdit", {
+        return helper.view("eventsEdit", {
           event: viewModel,
           error: `An event with Permalink Slug '${viewModel.Slug}'  already exists.`
         });
@@ -109,25 +112,26 @@ async function eventsStore(request: Request, h: ResponseToolkit): Promise<Respon
 }
 
 async function afterCreate(request:Request, h:ResponseToolkit):Promise<ResponseObject> {
-  var id = request.params.id;
+  var helper = new RequestHelper(request, h);
+  var id = helper.id;
   
-  return h.view("afterCreate", { id: id });
+  return helper.view("afterCreate", { id: id });
 }
 
 async function importView(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
-  var ravenSession = request.server.plugins.ravendb.session;
-  var id = request.params.id;
-  var event = await ravenSession.load<InviteEvent>(id);
+  var helper = new RequestHelper(request, h);
+  var event = await helper.ravenSession.load<InviteEvent>(helper.id);
 
-  return h.view("import", {
+  return helper.view("import", {
     event:event
   });
 }
 
 async function importSave(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
-  var ravenSession = request.server.plugins.ravendb.session;
-  var id = request.params.id;
-  var event = await ravenSession.load<InviteEvent>(id);
+  var helper = new RequestHelper(request, h);
+  var ravenSession = helper.ravenSession;
+  
+  var event = await ravenSession.load<InviteEvent>(helper.id);
   var viewModel = new InviteImport(<InviteImport>request.payload);
   viewModel.EventId = event.Id;
   viewModel.AccountId = event.AccountId;
@@ -177,9 +181,10 @@ async function importSave(request: Request, h: ResponseToolkit): Promise<Respons
 }
 
 async function toggleStatus(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
-  var ravenSession = request.server.plugins.ravendb.session;
-  var id = request.params.id;
-  var event = await ravenSession.load<InviteEvent>(id);
+  var helper = new RequestHelper(request, h);
+  var ravenSession = helper.ravenSession;
+  
+  var event = await ravenSession.load<InviteEvent>(helper.id);
 
   if(event.Status == InviteEventStatus.Active){
     event.Status = InviteEventStatus.Inactive;
@@ -191,9 +196,10 @@ async function toggleStatus(request: Request, h: ResponseToolkit): Promise<Respo
 }
 
 async function toggleInviteStatus(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
-  var ravenSession = request.server.plugins.ravendb.session;
-  var id = request.params.id;
-  var invite = await ravenSession.load<SeedsInvite>(id);
+  var helper = new RequestHelper(request, h);
+  var ravenSession = helper.ravenSession;
+
+  var invite = await ravenSession.load<SeedsInvite>(helper.id);
 
   if ( invite.Status == InviteStatus.Sent ) {
     invite.Status = InviteStatus.Available;
@@ -204,12 +210,11 @@ async function toggleInviteStatus(request: Request, h: ResponseToolkit): Promise
 }
 
 async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> {
-  var id = request.params.id;
-  var ravenSession = request.server.plugins.ravendb.session;
-  var event = await ravenSession.load<InviteEvent>(id);
+  var helper = new RequestHelper(request, h);
+  var ravenSession = helper.ravenSession;
+  var event = await ravenSession.load<InviteEvent>(helper.id);
 
-  var baseUrl = `${request.headers['x-forwarded-proto'] || request.server.info.protocol}://${request.headers['x-forwarded-host'] || request.info.host}`;
-  var eventUrl = `${baseUrl}/i/${event.Slug}`;
+  var eventUrl = `${helper.baseUrl}/i/${event.Slug}`;
   var qrCode = await QRCode.toDataURL(eventUrl);
 
   event.Permalink = eventUrl;
@@ -221,7 +226,7 @@ async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> 
                                   .orderByDescending("SentOn")
                                   .all();
   
-  var seedsInvitesInfo = await GetInvitesForAccount(<string>request.auth.credentials.SeedsAccount);
+  var seedsInvitesInfo = await GetInvitesForAccount(helper.auth.SeedsAccount);
 
   for ( var i=0; i< invites.length; i++ ) {
     var localInvite = invites[i];
@@ -244,9 +249,9 @@ async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> 
     }
   }
 
-  return h.view("view", {
+  return helper.view("view", {
     event:event,
-    baseUrl: baseUrl,
+    baseUrl: helper.baseUrl,
     qrCode: qrCode, 
     invites: invites,
     eventUrl: eventUrl
