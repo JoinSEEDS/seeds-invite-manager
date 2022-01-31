@@ -1,4 +1,3 @@
-import Handlebars from 'handlebars';
 import { InviteStatus } from '../models/SeedsInvite';
 
 export function inviteStatusColor(obj: InviteStatus) {
