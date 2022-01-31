@@ -229,10 +229,17 @@ async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> 
     if(blochainInvite){
       localInvite.SowQuantityString = blochainInvite.sow_quantity;
       localInvite.TransferQuantityString = blochainInvite.transfer_quantity;
+      localInvite.BlockchainInviteId = blochainInvite.invite_id;
       localInvite.ParseQuantities();
       if(blochainInvite.account && blochainInvite.account != ''){
         localInvite.Status = InviteStatus.Redeemed;
         localInvite.RedeemedAccount = blochainInvite.account;
+      }
+    } else {
+      if(localInvite.BlockchainInviteId){
+        localInvite.Status = InviteStatus.Deleted;
+      } else {
+        localInvite.Status = InviteStatus.NotFound;
       }
     }
   }

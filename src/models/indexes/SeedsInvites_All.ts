@@ -20,6 +20,12 @@ export class SeedsInvites_All extends AbstractJavaScriptIndexCreationTask<SeedsI
                 case "Redeemed":
                     sortStatus = 2;
                     break;
+                case "NotFound":
+                    sortStatus = 3;
+                    break;
+                case "Deleted":
+                    sortStatus = 4;
+                    break;
                 default:
                     break;
             }

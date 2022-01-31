@@ -7,6 +7,10 @@ export function inviteStatusColor(obj: InviteStatus) {
             return "success";
         case InviteStatus.Sent:
             return "info";
+        case InviteStatus.Deleted:
+            return "warning";
+        case InviteStatus.NotFound:
+            return "warning";
         default:
             return "light text-dark";
     }

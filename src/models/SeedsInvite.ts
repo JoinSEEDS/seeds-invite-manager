@@ -17,6 +17,7 @@ export class SeedsInvite {
     
     public WalletDynamicLink:string
     public WalletDynamicLinkInfo:object
+    public BlockchainInviteId: number|null = null
 
     public constructor(init?:Partial<SeedsInvite>) {
         Object.assign(this, init);
@@ -35,5 +36,7 @@ export class SeedsInvite {
 export enum InviteStatus {
     Available = "Available",
     Sent = "Sent",
-    Redeemed = "Redeemed"
+    Redeemed = "Redeemed",
+    Deleted = "Deleted",
+    NotFound = "NotFound"
 }
