@@ -10,6 +10,7 @@ import { GetHashFromSecret, GetInvitesForAccount } from "./infrastructure/telosC
 import e from "express"
 import { SeedsInvites_Stats, SeedsInvites_Stats_ReduceResult } from "./models/indexes/SeedsInvites_Stats"
 import { RequestHelper } from "./infrastructure/RequestHelper"
+import Boom from "@hapi/boom"
 
 async function eventsList(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     var helper = new RequestHelper(request,h);
@@ -85,6 +86,7 @@ async function eventsStore(request: Request, h: ResponseToolkit): Promise<Respon
     model.Name = viewModel.Name;
     model.Application = viewModel.Application;
     model.Status = InviteEventStatus.Active;
+    var slugChanged = false;
     if(model.Slug!=viewModel.Slug && viewModel.Slug != null){
       var countSlugExisting = await ravenSession.query<InviteEvent>({ collection:"InviteEvents" })
                                                 .whereEquals("Slug",viewModel.Slug)
@@ -98,11 +100,20 @@ async function eventsStore(request: Request, h: ResponseToolkit): Promise<Respon
         });
       }
       model.Slug = viewModel.Slug;
+      slugChanged = true;
     }
     if (!model.Slug) {
       model.Slug = uuidv4().slice(28);
+      slugChanged = true;
     }
     
+    if(!model.Permalink || slugChanged == true ){
+      var eventUrl = `${helper.baseUrl}/i/${model.Slug}`;
+      var qrCode = await QRCode.toDataURL(eventUrl);
+      model.Permalink = eventUrl;
+      model.QRCode = qrCode;
+    }
+
     await ravenSession.store(model);
 
     if (!viewModel.Id) {
@@ -210,23 +221,7 @@ async function toggleInviteStatus(request: Request, h: ResponseToolkit): Promise
   return h.redirect("/events/view/"+invite.EventId);
 }
 
-async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> {
-  var helper = new RequestHelper(request, h);
-  var ravenSession = helper.ravenSession;
-  var event = await ravenSession.load<InviteEvent>(helper.id);
-
-  var eventUrl = `${helper.baseUrl}/i/${event.Slug}`;
-  var qrCode = await QRCode.toDataURL(eventUrl);
-
-  event.Permalink = eventUrl;
-  event.QRCode = qrCode;
-
-  var invites = await ravenSession.query<SeedsInvite>({index: SeedsInvites_All})
-                                  .whereEquals("EventId", event.Id)
-                                  .orderBy("StatusForSort")
-                                  .orderByDescending("SentOn")
-                                  .all();
-  
+async function updateInvitesFromBlockchain(invites: SeedsInvite[], helper: RequestHelper){
   var seedsInvitesInfo = await GetInvitesForAccount(helper.auth.SeedsAccount);
 
   for ( var i=0; i< invites.length; i++ ) {
@@ -249,13 +244,31 @@ async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> 
       }
     }
   }
+}
+
+async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> {
+  var helper = new RequestHelper(request, h);
+  var ravenSession = helper.ravenSession;
+  var event = await ravenSession.load<InviteEvent>(helper.id);
+
+  if (event.AccountId!=helper.auth.SeedsAccount) {
+    throw Boom.unauthorized("Event is not part of the current SEEDS Account.");
+  }
+  
+  var invites = await ravenSession.query<SeedsInvite>({index: SeedsInvites_All})
+                                  .whereEquals("EventId", event.Id)
+                                  .orderBy("StatusForSort")
+                                  .orderByDescending("SentOn")
+                                  .all();
+  
+  updateInvitesFromBlockchain(invites, helper);
 
   return helper.view("view", {
     event:event,
     baseUrl: helper.baseUrl,
-    qrCode: qrCode, 
+    qrCode: event.QRCode, 
     invites: invites,
-    eventUrl: eventUrl
+    eventUrl: event.Permalink
   });
 }
 

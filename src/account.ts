@@ -3,7 +3,6 @@ import { AuthToken } from "./models/AuthToken"
 import { checkAuth, checkResponse, createNewAuth, getAccountInfo, infoResponse, newResponse, qrResponse } from './infrastructure/seedsAuthenticator'
 import { IIdentifiable } from "./models/IIdentifiable"
 import Boom from '@hapi/boom'
-import { documentStore } from "./database/ravenDb"
 import fetch from 'node-fetch'
 
 async function login(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
