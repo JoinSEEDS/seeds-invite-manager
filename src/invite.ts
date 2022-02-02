@@ -251,6 +251,9 @@ async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> 
   var ravenSession = helper.ravenSession;
   var event = await ravenSession.load<InviteEvent>(helper.id);
 
+  if (event==null) {
+    throw Boom.notFound("Event not found.");
+  }
   if (event.AccountId!=helper.auth.SeedsAccount) {
     throw Boom.unauthorized("Event is not part of the current SEEDS Account.");
   }
