@@ -18,10 +18,10 @@
         <a class="btn btn-{{eventStatusColor event.Status}}" data-bs-toggle="tooltip" data-bs-placement="left" title="Status: {{event.Status}}" href="{{checkPrefix "/events/toggleStatus/"}}{{event.Id}}">
             <i class="fa fa-power-off"></i>
         </a>
-        <a class="btn btn-outline-secondary" href="{{checkPrefix "/events/edit/"}}{{event.Id}}">
+        <a class="btn btn-outline-secondary" href="{{checkPrefix "/events/edit/"}}{{event.Id}}" title="Edit Event">
             <i class="fa fa-pen"></i>
         </a>
-        <a class="btn btn-outline-secondary btn-sm" href="{{checkPrefix "/events/import/"}}{{event.Id}}">
+        <a class="btn btn-outline-secondary btn-sm" href="{{checkPrefix "/events/import/"}}{{event.Id}}" title="Import more invites">
         <i class="fa fa-download"></i>
         import
         </a>

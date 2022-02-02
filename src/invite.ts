@@ -31,6 +31,7 @@ async function eventsList(request: Request, h: ResponseToolkit): Promise<Respons
           event.AvailableCount = stats.AvailableCount;
           event.SentCount = stats.SentCount;
           event.RedeemedCount = stats.RedeemedCount;
+          event.DeletedAndNotFoundCount = stats.DeletedCount + stats.NotFoundCount;
         }
       }
     events = events.sort((x,y)=> {
