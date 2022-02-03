@@ -6,11 +6,13 @@
         </a>
 
 
-    <div class="row row-cols-2 row-cols-md-4">
+    <div class="row row-cols-2 row-cols-xl-4">
         {{#each events}}
-        <div class="col col-md-3">
+        <div class="col">
             <div class="card my-2">
-            <img src="{{QRCode}}" class="card-img-top" alt="{{Name}} QR Code" width="200" />
+            <a href="{{checkPrefix "/events/view/"}}{{Id}}">
+                <img src="{{QRCode}}" class="card-img-top" alt="{{Name}} QR Code" width="100" />
+            </a>
             <div class="card-body">
                 <h5 class="card-title text-center">
                     <a href="{{checkPrefix "/events/view/"}}{{Id}}">

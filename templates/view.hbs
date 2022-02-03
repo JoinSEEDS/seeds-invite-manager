@@ -1,5 +1,5 @@
-<div class="row mt-3">
-    <div class="col col-md-4">
+<div class="row mt-3 row-cols-1 row-cols-lg-2">
+    <div class="col col-lg-4">
         <h1 class='text-center'>{{event.Name}}</h1>
         <div class="d-flex justify-content-center">
             <a download="{{event.Name}}.png" href="{{qrCode}}">
@@ -13,7 +13,7 @@
             </a>
         </div>
     </div>
-    <div class="col co-md-8">
+    <div class="col col-lg-8">
         <div class="btn-group  float-end">
         <a class="btn btn-{{eventStatusColor event.Status}}" data-bs-toggle="tooltip" data-bs-placement="left" title="Status: {{event.Status}}" href="{{checkPrefix "/events/toggleStatus/"}}{{event.Id}}">
             <i class="fa fa-power-off"></i>
@@ -26,43 +26,43 @@
         import
         </a>
         </div>
-    <h2 class="h3">Invites</h2>
-    <table class="table table-stripped">
-        {{!-- <thead>
-            <tr>
-                <th>Invite</th>
-            </tr>
-        </thead> --}}
-        <tbody>
-            {{#each invites}}
-            <tr>
-                <td title="">{{showPartly Secret}}</td>
-                <td>
-                    <div class="badge bg-{{inviteStatusColor Status}}">
-                        {{Status}}
-                    </div>
-                    {{#if (isSentStatus Status)}}
-                    <a class="btn btn-outline-secondary btn-sm" href="{{checkPrefix "/events/toggleInviteStatus/"}}{{Id}}" title="Recycle invite status">
-                        <i class="fa fa-recycle"></i>
-                    </a>
-                    {{/if}}
-                </td>
-                <td>
-                    {{#if (isRedeemed Status)}}
-                        <a href="https://eosauthority.com/account/{{RedeemedAccount}}?network=telos" target="_blank">{{RedeemedAccount}}</a>
-                    {{else}}
-                        {{formatDate SentOn}}
-                    {{/if}}
-                </td>
-                <td class="text-nowrap">
-                    §
-                    {{SowQuantity}} / 
-                    {{TransferQuantity}}
-                </td>
-            </tr>
-            {{/each}}
-        </tbody>
-    </table>
+        <h2 class="h3">Invites</h2>
+        <table class="table table-stripped">
+            {{!-- <thead>
+                <tr>
+                    <th>Invite</th>
+                </tr>
+            </thead> --}}
+            <tbody>
+                {{#each invites}}
+                <tr>
+                    <td title="">{{showPartly Secret}}</td>
+                    <td>
+                        <div class="badge bg-{{inviteStatusColor Status}}">
+                            {{Status}}
+                        </div>
+                        {{#if (isSentStatus Status)}}
+                        <a class="btn btn-outline-secondary btn-sm" href="{{checkPrefix "/events/toggleInviteStatus/"}}{{Id}}" title="Recycle invite status">
+                            <i class="fa fa-recycle"></i>
+                        </a>
+                        {{/if}}
+                    </td>
+                    <td>
+                        {{#if (isRedeemed Status)}}
+                            <a href="https://eosauthority.com/account/{{RedeemedAccount}}?network=telos" target="_blank">{{RedeemedAccount}}</a>
+                        {{else}}
+                            {{formatDate SentOn}}
+                        {{/if}}
+                    </td>
+                    <td class="text-nowrap">
+                        §
+                        {{SowQuantity}} / 
+                        {{TransferQuantity}}
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
 
     </div>
 </div>

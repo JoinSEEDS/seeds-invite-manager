@@ -13,6 +13,7 @@ export class InviteEvent {
     public SentCount: number
     public RedeemedCount: number 
     public DeletedAndNotFoundCount: number 
+    public AllCount: number
 
     public constructor(init?:Partial<InviteEvent>) {
         Object.assign(this, init);

@@ -9,7 +9,7 @@ import { SeedsInvites_All } from "./models/indexes/SeedsInvites_All"
 import { GetHashFromSecret, GetInvitesForAccount } from "./infrastructure/telosClient"
 import e from "express"
 import { SeedsInvites_Stats, SeedsInvites_Stats_ReduceResult } from "./models/indexes/SeedsInvites_Stats"
-import { RequestHelper } from "./infrastructure/RequestHelper"
+import { RequestHelper, updateInvitesFromBlockchain } from "./infrastructure/RequestHelper"
 import Boom from "@hapi/boom"
 
 async function eventsList(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
@@ -22,7 +22,6 @@ async function eventsList(request: Request, h: ResponseToolkit): Promise<Respons
 
     var inviteStats = await ravenSession.query<SeedsInvites_Stats_ReduceResult>({ index: SeedsInvites_Stats })
                               .whereEquals("AccountId", request.auth.credentials.SeedsAccount)
-                              //.projectInto<SeedsInvites_Stats_ReduceResult>()
                               .all();
 
     for ( var i=0; i < events.length; i++ ) {
@@ -33,11 +32,18 @@ async function eventsList(request: Request, h: ResponseToolkit): Promise<Respons
           event.SentCount = stats.SentCount;
           event.RedeemedCount = stats.RedeemedCount;
           event.DeletedAndNotFoundCount = stats.DeletedCount + stats.NotFoundCount;
+          event.AllCount = event.AvailableCount + event.SentCount + event.RedeemedCount + event.DeletedAndNotFoundCount;
         }
       }
     events = events.sort((x,y)=> {
-      if(x.Status == y.Status){
-        return 0;
+      if (x.Status == y.Status) {
+        if (x.AllCount = y.AllCount){
+          return 0;
+        }
+        if ( x.AllCount > y.AllCount ) {
+          return 1;
+        }
+        return -1;
       }
       if(x.Status == InviteEventStatus.Active){
           return -1;
@@ -221,30 +227,6 @@ async function toggleInviteStatus(request: Request, h: ResponseToolkit): Promise
   return h.redirect("/events/view/"+invite.EventId);
 }
 
-async function updateInvitesFromBlockchain(invites: SeedsInvite[], helper: RequestHelper){
-  var seedsInvitesInfo = await GetInvitesForAccount(helper.auth.SeedsAccount);
-
-  for ( var i=0; i< invites.length; i++ ) {
-    var localInvite = invites[i];
-    var blochainInvite = seedsInvitesInfo.find(invite=>invite.invite_hash == localInvite.Hash);
-    if(blochainInvite){
-      localInvite.SowQuantityString = blochainInvite.sow_quantity;
-      localInvite.TransferQuantityString = blochainInvite.transfer_quantity;
-      localInvite.BlockchainInviteId = blochainInvite.invite_id;
-      localInvite.ParseQuantities();
-      if(blochainInvite.account && blochainInvite.account != ''){
-        localInvite.Status = InviteStatus.Redeemed;
-        localInvite.RedeemedAccount = blochainInvite.account;
-      }
-    } else {
-      if(localInvite.BlockchainInviteId){
-        localInvite.Status = InviteStatus.Deleted;
-      } else {
-        localInvite.Status = InviteStatus.NotFound;
-      }
-    }
-  }
-}
 
 async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> {
   var helper = new RequestHelper(request, h);
