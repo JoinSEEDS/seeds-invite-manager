@@ -1,11 +1,14 @@
-<div>
-    <h1>Log Into App</h1>
+<div class="row justify-content-center">
+    <div class="col-5 text-center">
+    <h1>Log Into Invite Manager</h1>
 
     {{!-- <h2>Auth Token Id: {{authTokenId}}</h2> --}}
-    <p>Please use Wallet or Passport to scan this URL in order to Log In.</p>
+    <p>Scan this QR with Wallet or Passport in order to Log In</p>
     <img src="{{qrUrl}}" style="height: 400px;" />
-
-    
+    <div>
+        or click <a class="" href="{{esrUrl}}" >Login Link</a>
+    </div>
+    </div>    
 </div>
 
 {{#section 'script'}}

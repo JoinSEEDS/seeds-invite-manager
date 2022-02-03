@@ -1,5 +1,5 @@
 <div class="row mt-3">
-    <div class="col-4">
+    <div class="col col-md-4">
         <h1 class='text-center'>{{event.Name}}</h1>
         <div class="d-flex justify-content-center">
             <a download="{{event.Name}}.png" href="{{qrCode}}">
@@ -13,7 +13,7 @@
             </a>
         </div>
     </div>
-    <div class="col-8">
+    <div class="col co-md-8">
         <div class="btn-group  float-end">
         <a class="btn btn-{{eventStatusColor event.Status}}" data-bs-toggle="tooltip" data-bs-placement="left" title="Status: {{event.Status}}" href="{{checkPrefix "/events/toggleStatus/"}}{{event.Id}}">
             <i class="fa fa-power-off"></i>
