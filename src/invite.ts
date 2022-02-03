@@ -11,6 +11,7 @@ import e from "express"
 import { SeedsInvites_Stats, SeedsInvites_Stats_ReduceResult } from "./models/indexes/SeedsInvites_Stats"
 import { RequestHelper, updateInvitesFromBlockchain } from "./infrastructure/RequestHelper"
 import Boom from "@hapi/boom"
+import _ from 'lodash'
 
 async function eventsList(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     var helper = new RequestHelper(request,h);
@@ -35,22 +36,7 @@ async function eventsList(request: Request, h: ResponseToolkit): Promise<Respons
           event.AllCount = event.AvailableCount + event.SentCount + event.RedeemedCount + event.DeletedAndNotFoundCount;
         }
       }
-    events = events.sort((x,y)=> {
-      if (x.Status == y.Status) {
-        if (x.AllCount = y.AllCount){
-          return 0;
-        }
-        if ( x.AllCount > y.AllCount ) {
-          return 1;
-        }
-        return -1;
-      }
-      if(x.Status == InviteEventStatus.Active){
-          return -1;
-      }
-    
-      return 1; 
-  });
+    events = _.orderBy(events,["Status", "AllCount"], ["asc", "asc"]);
 
     return helper.view("eventsList", {
         events: events,
