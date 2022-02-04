@@ -20,6 +20,7 @@ import { documentStore } from "./database/ravenDb"
 import '@hapi/hapi'
 import './infrastructure/extensions'
 import ravenHandler from './infrastructure/ravenDbPlugin'
+import { adminRoutes } from "./admin";
 
 dotenv.config({ path: '.env' });
 
@@ -91,7 +92,11 @@ export const init = async function(): Promise<Server> {
     inviteLinks.forEach(route => {
       route.options = { auth: { mode: 'try' } };
     });
-    server.route(inviteLinks);
+    var adminLinks = setPrefix(adminRoutes);
+    adminLinks.forEach(route => {
+      route.options = { auth: { mode: 'try' } };
+    });
+    server.route(adminLinks);
     server.route(setPrefix(peopleRoutes));
 
     return server;

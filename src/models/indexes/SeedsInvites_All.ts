@@ -34,7 +34,8 @@ export class SeedsInvites_All extends AbstractJavaScriptIndexCreationTask<SeedsI
                 SentOn: se.SentOn,
                 Status: se.Status,
                 StatusForSort: sortStatus,
-                Secret: se.Secret
+                Secret: se.Secret,
+                AccountId: se.AccountId
             }
         });
     }
