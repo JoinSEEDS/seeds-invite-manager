@@ -31,3 +31,23 @@ function initloginPage(info){
     checkServer();
 
 }
+
+
+function initInviteView() {
+    var $copyBtn = $("#copyBtn");
+    $("#copyBtn, .copyBtn").on( "click", function(){
+        var url = document.getElementById("linkUrl");
+        
+        navigator.clipboard.writeText(url.getAttribute("href"));
+
+        $copyBtn.find('i').removeClass("fa-copy").addClass("fa-check");
+        setTimeout(function(){
+            $copyBtn.find('i').removeClass("fa-check").addClass("fa-copy");
+        }, 500);
+        return false;
+    });
+    
+    $( document ).ready(function() {
+        $('[data-bs-toggle="tooltip"]').tooltip()
+    });
+}

@@ -92,6 +92,7 @@ export const init = async function(): Promise<Server> {
     inviteLinks.forEach(route => {
       route.options = { auth: { mode: 'try' } };
     });
+    server.route(inviteLinks);
     var adminLinks = setPrefix(adminRoutes);
     adminLinks.forEach(route => {
       route.options = { auth: { mode: 'try' } };

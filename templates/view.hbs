@@ -7,7 +7,7 @@
             </a>
         </div>
         <div class="d-flex justify-content-center">
-            <a href="{{eventUrl}}" id="linkUrl" target="_blank">{{eventUrl}}</a>
+            <a href="{{eventUrl}}" id="linkUrl" class="copyBtn" target="_blank">{{eventUrl}}</a>
             <a class="btn btn-link btn-sm" id="copyBtn">
                 <i class="fa fa-copy"></i>
             </a>
@@ -21,13 +21,13 @@
         <a class="btn btn-outline-secondary" href="{{checkPrefix "/events/edit/"}}{{event.Id}}" title="Edit Event">
             <i class="fa fa-pen"></i>
         </a>
-        <a class="btn btn-outline-secondary btn-sm" href="{{checkPrefix "/events/import/"}}{{event.Id}}" title="Import more invites">
+        <a class="btn btn-outline-secondary" href="{{checkPrefix "/events/import/"}}{{event.Id}}" title="Import more invites">
         <i class="fa fa-download"></i>
         import
         </a>
         </div>
         <h2 class="h3">Invites</h2>
-        <table class="table table-stripped">
+        <table class="table table-stripped table-responsive">
             {{!-- <thead>
                 <tr>
                     <th>Invite</th>
@@ -71,26 +71,9 @@
 {{#section 'script'}}
 
 <script type="application/javascript">
-    function initCopy() {
-        var $copyBtn = $("#copyBtn");
-        $copyBtn.on( "click", function(){
-            var url = document.getElementById("linkUrl");
-            
-            navigator.clipboard.writeText(url.getAttribute("href"));
-
-            $copyBtn.find('i').removeClass("fa-copy").addClass("fa-check");
-            setTimeout(function(){
-                $copyBtn.find('i').removeClass("fa-check").addClass("fa-copy");
-            }, 500);
-        });
-    }
-    initCopy();
     
-
-    $( document ).ready(function() {
-        $('[data-bs-toggle="tooltip"]').tooltip()
-    });
-
+    initInviteView();
+    
 </script>
 
 {{/section}}
