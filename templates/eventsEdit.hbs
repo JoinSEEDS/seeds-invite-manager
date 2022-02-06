@@ -33,10 +33,12 @@
             <button type="submit" class="btn btn-success">
                 Save
             </button>
+            {{#if event.Id}}
             <a class="btn btn-outline-secondary" href="{{checkPrefix "/events/view/"}}{{event.Id}}">
                 <i class="fa fa-chevron-left"></i>
                 Back to Event
             </a>
+            {{/if}}
         </form>
     </div>
 </div>
