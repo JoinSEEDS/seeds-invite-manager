@@ -1,5 +1,5 @@
-<div class="row">
-    <div class="col">
+<div class="row justify-content-center">
+    <div class="col col-xl-5 col-sm-12">
         <h1>Event</h1>
         <form action="/events/edit" method="post" >
             <input type="hidden" value="{{event.Id}}" name="Id" id="Id">
@@ -24,6 +24,10 @@
             <button type="submit" class="btn btn-success">
                 Save
             </button>
+            <a class="btn btn-outline-secondary" href="{{checkPrefix "/events/view/"}}{{event.Id}}">
+                <i class="fa fa-chevron-left"></i>
+                Back to Event
+            </a>
         </form>
     </div>
 </div>
