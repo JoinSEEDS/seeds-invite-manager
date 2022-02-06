@@ -23,11 +23,11 @@
             <a class="btn btn-sm btn-outline-secondary" href="{{checkPrefix "/events/edit/"}}{{event.Id}}" title="Edit Event">
                 <i class="fa fa-pen"></i>
             </a>
-            {{!-- {{#unless invites}}
-            <a class="btn btn-sm btn-outline-secondary" href="#" title="Delete Event">
+            {{#unless invites}}
+            <a class="btn btn-sm btn-outline-secondary" href="{{checkPrefix "/events/delete/"}}{{event.Id}}" title="Delete Invite Event" id="delete-event" data-invite-event-name="{{event.Name}}">
                 <i class="fa fa-trash"></i>
             </a>
-            {{/unless}} --}}
+            {{/unless}}
             <a class="btn btn-sm btn-outline-secondary" href="{{checkPrefix "/events/import/"}}{{event.Id}}" title="Import more invites">
                 <i class="fa fa-download"></i>
                 import

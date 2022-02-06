@@ -50,4 +50,10 @@ function initInviteView() {
     $( document ).ready(function() {
         $('[data-bs-toggle="tooltip"]').tooltip()
     });
+
+    $("#delete-event").on("click",function(event){
+       if(!confirm(`Are you sure you want to delete this invite event '${$(this).data("inviteEventName")}'?`)){
+        return false;
+       } 
+    });
 }

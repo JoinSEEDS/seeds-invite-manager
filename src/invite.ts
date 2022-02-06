@@ -13,7 +13,7 @@ import { RequestHelper, updateInvitesFromBlockchain } from "./infrastructure/Req
 import Boom from "@hapi/boom"
 import _ from 'lodash'
 
-async function eventsList(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
+async function eventList(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     var helper = new RequestHelper(request,h);
     var ravenSession = helper.ravenSession;
 
@@ -43,7 +43,7 @@ async function eventsList(request: Request, h: ResponseToolkit): Promise<Respons
     });
 }
 
-async function eventsEdit(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
+async function eventEdit(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     var helper = new RequestHelper(request,h);
 
     var event = new InviteEvent();
@@ -56,7 +56,7 @@ async function eventsEdit(request: Request, h: ResponseToolkit): Promise<Respons
     });
 }
 
-async function eventsStore(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
+async function eventStore(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     var helper = new RequestHelper(request, h);
     var ravenSession = helper.ravenSession;
     var viewModel = <InviteEvent>request.payload;
@@ -224,6 +224,25 @@ async function inviteUnlink(request: Request, h: ResponseToolkit): Promise<Respo
   return h.redirect("/events/view/"+invite.EventId);
 }
 
+async function eventDelete(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
+  var helper = new RequestHelper(request, h);
+  var ravenSession = helper.ravenSession;
+
+  var event = await ravenSession.load<InviteEvent>(helper.id);
+
+  await ravenSession.delete(event);
+
+  var invites = await ravenSession.query<SeedsInvite>({ index: SeedsInvites_All})
+                                  .whereEquals("EventId",event.Id)
+                                  .all();
+  
+  for ( var i=0; i < invites.length; i++ ) {
+    invites[i].EventId = null;
+  }
+
+  return h.redirect("/events");
+}
+
 async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> {
   var helper = new RequestHelper(request, h);
   var ravenSession = helper.ravenSession;
@@ -257,17 +276,22 @@ export const inviteRoutes: ServerRoute[] = [
   {
     method: "GET",
     path: "/events",
-    handler: eventsList
+    handler: eventList
   },
   {
     method: "GET",
     path: "/events/edit/{id?}",
-    handler: eventsEdit
+    handler: eventEdit
   },
   {
     method: "POST",
     path: "/events/edit",
-    handler: eventsStore
+    handler: eventStore
+  },
+  {
+    method: "GET",
+    path: "/events/delete/{id}",
+    handler: eventDelete
   },
   {
     method: "GET",
