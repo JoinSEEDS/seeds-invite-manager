@@ -6,6 +6,7 @@ import { InviteStatus, SeedsInvite } from "./models/SeedsInvite";
 import { RavenDbProcessMonitor } from "./infrastructure/ravenDBProcessMonitor";
 import { getFirebaseDynamicLink } from "./infrastructure/firebaseDynamicLink";
 import { Exception } from "handlebars";
+import moment from 'moment-timezone'
 
 const PassportUrl = "https://joinseeds.app.link/accept-invite?invite-secret=";
 
@@ -28,7 +29,7 @@ async function inviteItem(request: Request, h: ResponseToolkit): Promise<Respons
                                         .firstOrNull();
         if (invite != null) {
           invite.Status = InviteStatus.Sent;
-          invite.SentOn = new Date();
+          invite.SentOn = moment().tz("UTC").toDate();
           
           ravenSession.saveChanges();
 

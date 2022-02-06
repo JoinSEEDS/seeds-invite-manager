@@ -9,6 +9,8 @@ export class InviteEvent {
     public Permalink: string
     public QRCode: string
 
+    public ResetUnclaimedInvites: ResetUnclaimedInvites
+
     public AvailableCount: number
     public SentCount: number
     public RedeemedCount: number 
@@ -19,11 +21,21 @@ export class InviteEvent {
         Object.assign(this, init);
         this.Slug = null;
     }
+
+    
 }
 
 export enum InviteApp {
     Wallet = "Wallet",
     Passport = "Passport"
+}
+
+export enum ResetUnclaimedInvites{
+    Never = "Never",
+    After10Mins = "After10Mins",
+    After15Mins = "After15Mins",
+    After30Mins = "After30Mins",
+    After60Mins = "After60Mins"
 }
 
 export enum InviteEventStatus{

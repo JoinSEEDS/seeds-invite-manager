@@ -2,7 +2,7 @@ import { number } from "joi";
 import { AbstractJavaScriptIndexCreationTask } from "ravendb";
 import { InviteStatus, SeedsInvite } from "../SeedsInvite";
 
-export class SeedsInvites_All extends AbstractJavaScriptIndexCreationTask<SeedsInvite, { EventId: string, SentOn: Date, Status: string, StatusForSort: number }> {
+export class SeedsInvites_All extends AbstractJavaScriptIndexCreationTask<SeedsInvite, { EventId: string, SentOn: Date, Status: string, StatusForSort: number, AccountId:string }> {
     public constructor() {
         super();
 

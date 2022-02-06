@@ -9,7 +9,8 @@ import { SeedsInvites_All } from "./models/indexes/SeedsInvites_All"
 import { GetHashFromSecret, GetInvitesForAccount } from "./infrastructure/telosClient"
 import e from "express"
 import { SeedsInvites_Stats, SeedsInvites_Stats_ReduceResult } from "./models/indexes/SeedsInvites_Stats"
-import { RequestHelper, updateInvitesFromBlockchain } from "./infrastructure/RequestHelper"
+import { RequestHelper } from "./infrastructure/RequestHelper"
+import { updateInvitesFromBlockchain } from "./infrastructure/extensions"
 import Boom from "@hapi/boom"
 import _ from 'lodash'
 
@@ -77,6 +78,7 @@ async function eventStore(request: Request, h: ResponseToolkit): Promise<Respons
     }
     model.Name = viewModel.Name;
     model.Application = viewModel.Application;
+    model.ResetUnclaimedInvites = viewModel.ResetUnclaimedInvites;
     model.Status = InviteEventStatus.Active;
     var slugChanged = false;
     if(model.Slug!=viewModel.Slug && viewModel.Slug != null){

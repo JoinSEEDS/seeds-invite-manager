@@ -20,7 +20,16 @@
                 <input type="text" class="form-control" name="Slug" id="Slug" value="{{event.Slug}}" {{disabled (isExistingEvent event)}} />
                 <label for="Slug">Permalink Slug (auto-generated if empty)</label>
             </div>
-
+            <div class="form-floating mb-2">
+                <select  class="form-select" name="ResetUnclaimedInvites" id="ResetUnclaimedInvites" >
+                    <option value="Never" {{{select event.ResetUnclaimedInvites 'Never'}}}>Never</option>
+                    <option value="After10Mins" {{{select event.ResetUnclaimedInvites 'After10Mins'}}}>10 minutes</option>
+                    <option value="After15Mins" {{{select event.ResetUnclaimedInvites 'After15Mins'}}}>15 minutes</option>
+                    <option value="After30Mins" {{{select event.ResetUnclaimedInvites 'After30Mins'}}}>30 minutes</option>
+                    <option value="After60Mins" {{{select event.ResetUnclaimedInvites 'After60Mins'}}}>60 minutes</option>
+                </select>
+                <label for="Name">Reset Unclaimed Invites After</label>
+            </div>
             <button type="submit" class="btn btn-success">
                 Save
             </button>
