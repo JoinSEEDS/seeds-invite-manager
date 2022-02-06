@@ -199,7 +199,7 @@ async function toggleStatus(request: Request, h: ResponseToolkit): Promise<Respo
   return h.redirect("/events/view/"+event.Id);
 }
 
-async function toggleInviteStatus(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
+async function inviteToggleStatus(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
   var helper = new RequestHelper(request, h);
   var ravenSession = helper.ravenSession;
 
@@ -213,6 +213,16 @@ async function toggleInviteStatus(request: Request, h: ResponseToolkit): Promise
   return h.redirect("/events/view/"+invite.EventId);
 }
 
+async function inviteUnlink(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
+  var helper = new RequestHelper(request, h);
+  var ravenSession = helper.ravenSession;
+
+  var invite = await ravenSession.load<SeedsInvite>(helper.id);
+
+  await ravenSession.delete(invite);
+
+  return h.redirect("/events/view/"+invite.EventId);
+}
 
 async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> {
   var helper = new RequestHelper(request, h);
@@ -286,7 +296,12 @@ export const inviteRoutes: ServerRoute[] = [
   },
   {
     method: "GET",
-    path: "/events/toggleInviteStatus/{id}",
-    handler: toggleInviteStatus
+    path: "/events/invite/toggleStatus/{id}",
+    handler: inviteToggleStatus
+  },
+  {
+    method: "GET",
+    path: "/events/invite/unlink/{id}",
+    handler: inviteUnlink
   }
 ];

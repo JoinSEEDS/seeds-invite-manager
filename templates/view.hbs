@@ -14,17 +14,37 @@
         </div>
     </div>
     <div class="col col-lg-8">
-        <div class="btn-group  float-end">
-        <a class="btn btn-{{eventStatusColor event.Status}}" data-bs-toggle="tooltip" data-bs-placement="left" title="Status: {{event.Status}}" href="{{checkPrefix "/events/toggleStatus/"}}{{event.Id}}">
-            <i class="fa fa-power-off"></i>
-        </a>
-        <a class="btn btn-outline-secondary" href="{{checkPrefix "/events/edit/"}}{{event.Id}}" title="Edit Event">
-            <i class="fa fa-pen"></i>
-        </a>
-        <a class="btn btn-outline-secondary" href="{{checkPrefix "/events/import/"}}{{event.Id}}" title="Import more invites">
-        <i class="fa fa-download"></i>
-        import
-        </a>
+        <div class="float-end">
+
+        <div class="btn-group">
+            <a class="btn btn-sm btn-{{eventStatusColor event.Status}}" data-bs-toggle="tooltip" data-bs-placement="left" title="Status: {{event.Status}}" href="{{checkPrefix "/events/toggleStatus/"}}{{event.Id}}">
+                <i class="fa fa-power-off"></i>
+            </a>
+            <a class="btn btn-sm btn-outline-secondary" href="{{checkPrefix "/events/edit/"}}{{event.Id}}" title="Edit Event">
+                <i class="fa fa-pen"></i>
+            </a>
+            {{!-- {{#unless invites}}
+            <a class="btn btn-sm btn-outline-secondary" href="#" title="Delete Event">
+                <i class="fa fa-trash"></i>
+            </a>
+            {{/unless}} --}}
+            <a class="btn btn-sm btn-outline-secondary" href="{{checkPrefix "/events/import/"}}{{event.Id}}" title="Import more invites">
+                <i class="fa fa-download"></i>
+                import
+            </a>
+            {{!-- <a class="btn btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="visually-hidden">Toggle Dropdown</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" >
+                <li>
+                    <a class="dropdown-item" href="#">
+                        <i class="fa fa-trash"></i>
+                        Delete Event
+                    </a>
+                </li>
+            </ul> --}}
+        
+        </div>
         </div>
         <h2 class="h3">Invites</h2>
         <table class="table table-stripped table-responsive">
@@ -42,7 +62,7 @@
                             {{Status}}
                         </div>
                         {{#if (isSentStatus Status)}}
-                        <a class="btn btn-outline-secondary btn-sm" href="{{checkPrefix "/events/toggleInviteStatus/"}}{{Id}}" title="Recycle invite status">
+                        <a class="btn btn-outline-secondary btn-sm" href="{{checkPrefix "/events/invite/toggleStatus/"}}{{Id}}" title="Recycle invite status">
                             <i class="fa fa-recycle"></i>
                         </a>
                         {{/if}}
@@ -58,6 +78,25 @@
                         §
                         {{SowQuantity}} / 
                         {{TransferQuantity}}
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" >
+                            <li>
+                                <a class="dropdown-item" href="{{checkPrefix "/events/invite/unlink/"}}{{Id}}" title="Remove Invite from Invite Manager">
+                                    <i class="fa fa-unlink"></i>
+                                    Unlink Invite
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item disabled" title="Remove Invite & Delete from Blockchain">
+                                    <i class="fa fa-trash"></i>
+                                    Delete Invite
+                                </a>
+                            </li>
+                        </ul>
                     </td>
                 </tr>
                 {{/each}}
