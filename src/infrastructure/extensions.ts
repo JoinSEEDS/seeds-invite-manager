@@ -38,6 +38,8 @@ export async function updateInvitesFromBlockchain(invites: SeedsInvite[], seedsA
         }
       }
     }
+
+    return invites;
   }
 
 export function getResetMinutes(params:ResetUnclaimedInvites):number {

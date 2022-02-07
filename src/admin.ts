@@ -39,7 +39,7 @@ export class AccountInfo{
                                        .whereEquals("AccountId", item.AccountId)
                                        .all();
         
-        updateInvitesFromBlockchain(seedsInvites, item.AccountId);
+        await updateInvitesFromBlockchain(seedsInvites, item.AccountId);
         
         var eventIds = [...new Set(seedsInvites.map(x=>x.EventId))];
         var events = await localSession.query<InviteEvent>({collection:"InviteEvents"})
