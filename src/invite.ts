@@ -263,7 +263,7 @@ async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> 
                                   .orderByDescending("SentOn")
                                   .all();
   
-  updateInvitesFromBlockchain(invites, helper);
+  updateInvitesFromBlockchain(invites, helper.auth.SeedsAccount);
 
   return helper.view("view", {
     event:event,

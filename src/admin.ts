@@ -38,8 +38,8 @@ export class AccountInfo{
         var seedsInvites = await localSession.query<SeedsInvite>( { index:SeedsInvites_All } )
                                        .whereEquals("AccountId", item.AccountId)
                                        .all();
-  
-        updateInvitesFromBlockchain(seedsInvites,helper);
+        
+        updateInvitesFromBlockchain(seedsInvites, item.AccountId);
         
         var eventIds = [...new Set(seedsInvites.map(x=>x.EventId))];
         var events = await localSession.query<InviteEvent>({collection:"InviteEvents"})
@@ -48,11 +48,11 @@ export class AccountInfo{
                                       .whereNotEquals("ResetUnclaimedInvites", ResetUnclaimedInvites.Never)
                                       .all();
 
-        for (var i = 0; i < events.length; i++) {
-          var event = events[i];
+        for (var j = 0; j < events.length; j++) {
+          var event = events[j];
           var invites = seedsInvites.filter(x=>x.EventId == event.Id && x.Status == InviteStatus.Sent);
-          for(var j=0; j < invites.length; j++){
-              var invite = invites[j];
+          for(var k=0; k < invites.length; k++){
+              var invite = invites[k];
               
               var resetMinutes = getResetMinutes(event.ResetUnclaimedInvites);
               
@@ -64,7 +64,7 @@ export class AccountInfo{
               }
           }
         }
-
+        
         invitesCount += seedsInvites.length;
       } catch {
         exceptionsCount++;

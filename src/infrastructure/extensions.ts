@@ -15,8 +15,8 @@ declare module '@hapi/hapi' {
   }
 
   
-export async function updateInvitesFromBlockchain(invites: SeedsInvite[], helper: RequestHelper){
-    var seedsInvitesInfo = await GetInvitesForAccount(helper.auth.SeedsAccount);
+export async function updateInvitesFromBlockchain(invites: SeedsInvite[], seedsAccount: string){
+    var seedsInvitesInfo = await GetInvitesForAccount(seedsAccount);
   
     for ( var i=0; i< invites.length; i++ ) {
       var localInvite = invites[i];
