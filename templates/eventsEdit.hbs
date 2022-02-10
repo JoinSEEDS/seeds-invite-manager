@@ -28,7 +28,11 @@
                     <option value="After30Mins" {{{select event.ResetUnclaimedInvites 'After30Mins'}}}>30 minutes</option>
                     <option value="After60Mins" {{{select event.ResetUnclaimedInvites 'After60Mins'}}}>60 minutes</option>
                 </select>
-                <label for="Name">Reset Unclaimed Invites After</label>
+                <label for="ResetUnclaimedInvites">Recycle Unclaimed Invites After</label>
+            </div>
+            <div class="form-floating mb-2">
+                <input type="datetime-local" class="form-control" name="CutoffDate" id="CutoffDate" value="{{formatDateValue event.CutoffDate}}" />
+                <label for="CutoffDate">Expiry Date & Time of Event (optional in UTC)</label>
             </div>
             <button type="submit" class="btn btn-success">
                 Save
@@ -37,6 +41,11 @@
             <a class="btn btn-outline-secondary" href="{{checkPrefix "/events/view/"}}{{event.Id}}">
                 <i class="fa fa-chevron-left"></i>
                 Back to Event
+            </a>
+            {{else}}
+            <a class="btn btn-outline-secondary" href="{{checkPrefix "/events"}}">
+                <i class="fa fa-chevron-left"></i>
+                Back to List
             </a>
             {{/if}}
         </form>

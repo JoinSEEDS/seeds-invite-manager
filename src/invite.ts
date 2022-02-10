@@ -13,6 +13,7 @@ import { RequestHelper } from "./infrastructure/RequestHelper"
 import { updateInvitesFromBlockchain } from "./infrastructure/extensions"
 import Boom from "@hapi/boom"
 import _ from 'lodash'
+import moment from 'moment-timezone'
 
 async function eventList(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     var helper = new RequestHelper(request,h);
@@ -46,7 +47,7 @@ async function eventList(request: Request, h: ResponseToolkit): Promise<Response
 
 async function eventEdit(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     var helper = new RequestHelper(request,h);
-
+    
     var event = new InviteEvent();
     if (helper.id) {
       event = await helper.ravenSession.load<InviteEvent>(helper.id);
@@ -62,6 +63,8 @@ async function eventStore(request: Request, h: ResponseToolkit): Promise<Respons
     var ravenSession = helper.ravenSession;
     var viewModel = <InviteEvent>request.payload;
 
+    console.log(viewModel.CutoffDate);
+
     if (!viewModel.Name) {
       return helper.view("eventsEdit", {
         event: viewModel,
@@ -73,13 +76,20 @@ async function eventStore(request: Request, h: ResponseToolkit): Promise<Respons
     if (!viewModel.Id) {
       model = new InviteEvent(viewModel);
       model.AccountId = helper.auth.SeedsAccount;
+      model.Status = InviteEventStatus.Active;
     } else {
       model = await ravenSession.load<InviteEvent>(viewModel.Id)
     }
     model.Name = viewModel.Name;
     model.Application = viewModel.Application;
     model.ResetUnclaimedInvites = viewModel.ResetUnclaimedInvites;
-    model.Status = InviteEventStatus.Active;
+    
+    if(viewModel.CutoffDate){
+        viewModel.CutoffDate = new Date(viewModel.CutoffDate);
+        model.CutoffDate = new Date(Date.UTC(viewModel.CutoffDate.getUTCFullYear(),viewModel.CutoffDate.getUTCMonth(),viewModel.CutoffDate.getUTCDay(),viewModel.CutoffDate.getUTCHours(),viewModel.CutoffDate.getUTCMinutes()));
+    } else {
+      model.CutoffDate = null;
+    }
     var slugChanged = false;
     if(model.Slug!=viewModel.Slug && viewModel.Slug != null){
       var countSlugExisting = await ravenSession.query<InviteEvent>({ collection:"InviteEvents" })
@@ -196,6 +206,9 @@ async function toggleStatus(request: Request, h: ResponseToolkit): Promise<Respo
     event.Status = InviteEventStatus.Inactive;
   } else {
     event.Status = InviteEventStatus.Active;
+    if (event.CutoffDate<moment().tz("UTC").toDate()) {
+      event.CutoffDate = null;
+    }
   }
 
   return h.redirect("/events/view/"+event.Id);
@@ -274,6 +287,7 @@ async function view(request:Request, h:ResponseToolkit):Promise<ResponseObject> 
     eventUrl: event.Permalink
   });
 }
+
 
 export const inviteRoutes: ServerRoute[] = [
   {

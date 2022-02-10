@@ -8,6 +8,7 @@ export class InviteEvent {
     public Status:InviteEventStatus = InviteEventStatus.Inactive
     public Permalink: string
     public QRCode: string
+    public CutoffDate: Date | null = null
 
     public ResetUnclaimedInvites: ResetUnclaimedInvites
 
