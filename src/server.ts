@@ -28,6 +28,7 @@ dotenv.config({ path: '.env' });
 export let server: Server;
 
 export const init = async function(): Promise<Server> {
+    process.env.TZ = 'Europe/London';
 
     server = Hapi.server({
         port: process.env.PORT || 4000,

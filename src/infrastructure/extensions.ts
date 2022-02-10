@@ -22,6 +22,9 @@ export async function updateInvitesFromBlockchain(invites: SeedsInvite[], seedsA
       var localInvite = invites[i];
       var blochainInvite = seedsInvitesInfo.find(invite=>invite.invite_hash == localInvite.Hash);
       if(blochainInvite){
+        if (localInvite.Status == InviteStatus.Deleted || localInvite.Status == InviteStatus.NotFound ) {
+            localInvite.Status = InviteStatus.Available;
+        }
         localInvite.SowQuantityString = blochainInvite.sow_quantity;
         localInvite.TransferQuantityString = blochainInvite.transfer_quantity;
         localInvite.BlockchainInviteId = blochainInvite.invite_id;
